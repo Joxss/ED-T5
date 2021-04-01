@@ -428,10 +428,10 @@ void qryCv(QuadTree casosCv, Htable cepXquadra, int n, char id[], char face, dou
     // QuadNode node = QtGetById(quadras,id);
     // if(node == NULL) return;
     // Generic quadra = QtGetInfo(quadras,node);
-    Generic quadra = hashGetKey(cepXquadra,id);
+    Quadra quadra = hashGetKey(cepXquadra,id);
     
     //calcula os valores para o quadrado que contem o numero de casos de covid na quadra
-    setCv(&x, &y, &w, &h, n,genericGetValores(quadra),face,num);
+    setCv(&x, &y, &w, &h, n,quadra,face,num);
     Quad q = createQuad(x,y,w,h,n);
     quadSetFace(q,face);
     Ponto p = quadGetPonto(q);
@@ -591,9 +591,9 @@ void qryCi(FILE *txt, QuadTree postos, QuadTree casosCv, QuadTree densidades, Li
 
 void qrySoc(FILE *txt, QuadTree postos, Htable cepXquadra, List qryFigures, int k, char * cep, char face, double num){
     double x, y, w, h, xPonto, yPonto;
-    Generic quadra = hashGetKey(cepXquadra,cep);
+    Quadra quadra = hashGetKey(cepXquadra,cep);
     
-    setCv(&x, &y, &w, &h, 1 ,genericGetValores(quadra),face,num);
+    setCv(&x, &y, &w, &h, 1 ,quadra,face,num);
     Quad q = createQuad(x,y,w,h,k);
     quadSetFace(q,face);
 
@@ -637,33 +637,32 @@ void qrySoc(FILE *txt, QuadTree postos, Htable cepXquadra, List qryFigures, int 
 //************ T4 ************//
 
 void qryM(FILE *txt, Htable pessoas, Htable quadras, char *cep){
-    Generic quadra = hashGetKey(quadras,cep);
+    Quadra quadra = hashGetKey(quadras,cep);
     if(quadra == NULL){
         fprintf(txt,"ERRO - QUADRA INEXISTENTE\n");
         return;
     }
-    List moradores = quadraGetMoradores(genericGetValores(quadra));
+    List moradores = quadraGetMoradores(quadra);
     Node node = listGetFirst(moradores);
     Generic morador;
-    Generic pessoa;
+    Pessoa pessoa;
     
     while(node != NULL){
         morador = nodeGetData(node);
         pessoa = hashGetKey(pessoas, moradorGetCpf(genericGetValores(morador)));
 
-        if(pessoa != NULL) txtMQry(txt,genericGetValores(morador), genericGetValores(pessoa));
+        if(pessoa != NULL) txtMQry(txt,genericGetValores(morador), pessoa);
         
         node = nodeGetNext(node);
     }
 }
 
 void qryDm(FILE *txt, List qryFigures, QuadTree moradores, Htable cpfXpessoa, char *cpf){
-    Generic elementoPessoa = hashGetKey(cpfXpessoa,cpf);
-    if(elementoPessoa == NULL){
+    Pessoa pessoa = hashGetKey(cpfXpessoa,cpf);
+    if(pessoa == NULL){
         fprintf(txt,"Morador inexistente\n");
         return;
     }
-    Pessoa pessoa = genericGetValores(elementoPessoa);
 
     QuadNode nodeMorador = QtGetById(moradores,cpf);
     if(nodeMorador == NULL) {
@@ -699,24 +698,22 @@ void qryDe(FILE *txt, QuadTree estabelecimentos, Htable cpfXpessoa, char *cnpj){
     Generic elementoEstabelecimento = QtGetInfo(estabelecimentos,nodeEstabelecimento);
     Estabelecimento estabelecimento = genericGetValores(elementoEstabelecimento);
 
-    Generic elementoPessoa = hashGetKey(cpfXpessoa,estabelecimentoGetCpf(estabelecimento));
-    if(elementoPessoa == NULL){
+    Pessoa pessoa = hashGetKey(cpfXpessoa,estabelecimentoGetCpf(estabelecimento));
+    if(pessoa == NULL){
         fprintf(txt,"Proprietario do estabelecimento inexistente\n");
         return;
     }
-    Pessoa pessoa = genericGetValores(elementoPessoa);
 
     txtDeQry(txt, estabelecimento, pessoa);
 }
 
 void qryMud(FILE *txt, QuadTree moradores, Htable cepXquadra, Htable cpfXpessoa, Htable cpfXcep, List qryFigures, char *cpf, char *cep, char face, int num,char *compl){
-    Generic elemento = hashGetKey(cepXquadra,cep);
-    if(elemento == NULL){
+    Generic elemento;
+    Quadra quadraNova = hashGetKey(cepXquadra,cep);
+    if(quadraNova == NULL){
         fprintf(txt,"Cep não existe\n");
         return;
     }
-    Quadra quadraNova = genericGetValores(elemento);
-    char *cepNovo = quadraGetCep(quadraNova);
 
     QuadNode nodeMorador = QtGetById(moradores,cpf);
     if(nodeMorador == NULL){
@@ -731,17 +728,15 @@ void qryMud(FILE *txt, QuadTree moradores, Htable cepXquadra, Htable cpfXpessoa,
 
     Morador morador = genericGetValores(elementoMorador);
 
-    elemento = hashGetKey(cpfXpessoa,cpf);
-    if(elemento == NULL){
+    Pessoa pessoa = hashGetKey(cpfXpessoa,cpf);
+    if(pessoa == NULL){
         printf("pessoa nula\n");
     }
-    Pessoa pessoa = genericGetValores(elemento);
 
-    elemento = hashGetKey(cpfXcep,cpf);
-    if(elemento == NULL){
-        printf("cep nulo\n");
-    }
-    chaveXvalorSetValor(genericGetValores(elemento),cep);
+    char *cepNovo = malloc(sizeof(char)*strlen(cep)+1);
+    strcpy(cepNovo,cep);
+    char *cepRetornado = hashUpdateKey(cpfXcep,cpf,cepNovo);
+    free(cepRetornado);
 
     char cepAntigo[30], complAntigo[30];
     char faceAntiga = moradorGetFace(morador);
@@ -752,9 +747,8 @@ void qryMud(FILE *txt, QuadTree moradores, Htable cepXquadra, Htable cpfXpessoa,
 
     if(strcmp(cepNovo,cepAntigo) != 0){
         quadraInserirMorador(quadraNova,elementoMorador);
-        Generic quadraAntigaGeneric = hashGetKey(cepXquadra,cepAntigo);
-        if(quadraAntigaGeneric != NULL){
-            Quadra quadraAntiga = genericGetValores(quadraAntigaGeneric);
+        Quadra quadraAntiga = hashGetKey(cepXquadra,cepAntigo);
+        if(quadraAntiga != NULL){
             quadraRemoverMorador(quadraAntiga,cpf);
         }
     }
@@ -792,13 +786,11 @@ void qryDmprbt(QuadTree tree, char *path){
 void qryEplg(FILE *txt, QuadTree estabelecimentos, Htable tipoXdescricao, Htable cpfXpessoa ,List qryFigures, double x, double y, double w, double h, char *tipo){
     char *descricao = NULL;
     if(tipo != NULL){
-        Generic descElemento = hashGetKey(tipoXdescricao,tipo);
-        if(descElemento == NULL){
+        char *descricao = hashGetKey(tipoXdescricao,tipo);
+        if(descricao == NULL){
             fprintf(txt,"Tipo inexistente\n");
             return;
         }
-        ChaveXValor key = genericGetValores(descElemento);
-        descricao = chaveXvalorGetValor(key);
     }
 
     List estabelecimentosInside = QtNosDentroRetangulo(estabelecimentos,x,y,x+w,y+h);
@@ -817,8 +809,7 @@ void qryEplg(FILE *txt, QuadTree estabelecimentos, Htable tipoXdescricao, Htable
         else if(!strcmp(descricao,estabelecimentoGetDescricao(est))) tipoEspecifico = 1;
 
         if(tipoEspecifico){
-            Generic elementoPessoa = hashGetKey(cpfXpessoa,estabelecimentoGetCpf(est));
-            Pessoa pessoa = genericGetValores(elementoPessoa);
+            Pessoa pessoa = hashGetKey(cpfXpessoa,estabelecimentoGetCpf(est));
 
             Ponto p = estabelecimentoGetCoord(est);
 

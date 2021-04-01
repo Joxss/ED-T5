@@ -30,9 +30,9 @@ int listLenght(List l);
 Node listInsert(List l, Generic n);
 
 /* Procura por um elemento na Linked List a partir de seu id.
-*  Parâmetros: recebe um ponteiro não nulo para a lista e um tipo char[] representando o id do elemento desejado. 
+*  Parâmetros: recebe um ponteiro não nulo para a lista e um tipo char[] representando o id do elemento desejado e um ponteiro para a função que obtem o id do elemento armazenado. 
 *  Retorno: Caso exista, retorna um ponteiro para o nó do elemento desejado, caso contrario retorna NULL. */
-Node listGetById(List l, char id[]);
+Node listGetById(List l, char id[], char*(*getId)(void*));
 
 /* Procura por um node na Linked List a partir de seu elemento armazenado.
 *  Parâmetros: recebe um ponteiro não nulo para a lista e um tipo void* representando o elemento armazenado dentro do node desejado
@@ -43,6 +43,11 @@ Node listGetByData(List l, void*data);
 *  Parâmetros: Um ponteiro não nulo para a lista e um ponteiro para a funcao utilizada para desalocar o elemento armazenado nos nodes.
 *  Retorno: Não possui retorno. */
 void freeLista(List l, void(*freeFunc)(void*));
+
+/* Desaloca os espaços de memória alocados na criação da lista e inclusive para os valores contidos dentro dos nodes. Exclusiva para uso na hashTable
+*  Parâmetros: Um ponteiro não nulo para a lista e um ponteiro para a funcao utilizada para desalocar o elemento armazenado nos nodes.
+*  Retorno: Não possui retorno. */
+void freeListaHT(List l, void(*freeFunc)(void*));
 
 /* Similar a função freeLista porém desaloca apenas a memória dos nodes e da lista, sem desalocar a memória de elementos dentro dos nodes.
 *  Parâmetros: Um ponteiro não nulo para a lista.

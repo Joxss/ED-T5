@@ -35,6 +35,12 @@ int hashKeyExist(Htable ht, char *key);
 */
 void *hashGetKey(Htable ht, char *key);
 
+/* Atualiza uma informacao relacionada a uma chave em uma hash table.
+ * Parâmetros: Recebe um ponteiro nao nulo para a hash table, a chave e o novo valor.
+ * Retorno: Retorna o valor antigo, caso a chave exista.
+*/
+void *hashUpdateKey(Htable ht, char *key, void *data);
+
 /* Remove um chave pertencente a hash table.
  * Parâmetros: Recebe um ponteiro nao nulo para a hash table e o valor da chave como string.
  * Retorno: Retorna a informacao relacionada a chave removida.

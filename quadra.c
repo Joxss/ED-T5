@@ -88,7 +88,7 @@ void quadraInserirMorador(Quadra q, Generic morador){
 void quadraRemoverMorador(Quadra q, char cpf[]){
     quadra_tad *quadra = (quadra_tad*) q;
 
-    Node node = listGetById(quadra->moradores,cpf);
+    Node node = listGetById(quadra->moradores,cpf,genericGetId);
     if(node == NULL) return;
     listRemoveNode(quadra->moradores,node);
 }

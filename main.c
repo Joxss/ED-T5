@@ -95,9 +95,9 @@ int main(int argc, char *argv[]){
         freeLista(qryFigures,freeGeneric);
     }
 
-    freeHashTable(tipoXdescricao,freeGeneric);
-    freeHashTable(cpfXpessoa,freeGeneric);
-    freeHashTable(cpfXcep,freeGeneric);
+    freeHashTable(tipoXdescricao,free);
+    freeHashTable(cpfXpessoa,freePessoa);
+    freeHashTable(cpfXcep,free);
     freeHashTable2(cepXquadra);
 
     freeQt(trees[0],freeGeneric);

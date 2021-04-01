@@ -105,7 +105,7 @@ void leGeo(QuadTree * trees, Htable cepXQuadra,char input[]){
 
             listInsert(quadraList, elemento);
 
-            hashInsert(cepXQuadra,id,elemento);
+            hashInsert(cepXQuadra,id,quadra);
         } else if(strcmp("h",comando)==0){ // HIDRANTE
             fscanf(geo,"%s %lf %lf\n",id,&x,&y);
 
@@ -355,19 +355,18 @@ void leEc(QuadTree quadras, QuadTree estabelecimentos, Htable tipoXdescricao, ch
         if(strcmp("t",comando)==0){
             fscanf(ec,"%s %s\n",codt,descricao);
 
-            ChaveXValor t = createChaveValor(codt,descricao);
+            char *valor = malloc(sizeof(char)*strlen(descricao)+1);
+            strcpy(valor,descricao);
 
-            Generic g = createGeneric("chaveXvalor",t,freeChaveXvalor, NULL);
-            hashInsert(tipoXdescricao,codt,g);
+            hashInsert(tipoXdescricao,codt,valor);
         }else if(strcmp("e",comando)==0){
             fscanf(ec,"%s %s %s %s %c %d %s\n", cnpj, cpf, codt, cep, &face, &num, nome);
-            Generic g = hashGetKey(tipoXdescricao, codt); // PEGA A DESCRIÇÃO
-            if(g == NULL) continue;
-            char *desc = chaveXvalorGetValor(genericGetValores(g));
+            char *desc = hashGetKey(tipoXdescricao, codt); // PEGA A DESCRIÇÃO
+            if(desc == NULL) continue;
 
             QuadNode node = QtGetById(quadras,cep); // PEGA A QUADRA
             if(node != NULL){
-                g = QtGetInfo(quadras,node);
+                Generic g = QtGetInfo(quadras,node);
                 Quadra quadra = genericGetValores(g);
 
                 Estabelecimento est = createEstabelecimento(cnpj,cpf,desc,quadra, face, num,nome);
@@ -396,21 +395,21 @@ void lePm(QuadTree quadras, QuadTree moradores, Htable cpfXpessoa, Htable cpfXce
             fscanf(pm,"%s %s %s %c %s\n",cpf,nome,sobrenome,&sexo,nasc);
 
             Pessoa pessoa = createPessoa(cpf,nome,sobrenome,sexo,nasc);
-            Generic elemento = createGeneric("pessoa",pessoa,freePessoa, NULL);
 
-            hashInsert(cpfXpessoa,cpf,elemento);
+            hashInsert(cpfXpessoa,cpf,pessoa);
         }else if(strcmp("m",comando)==0){
             fscanf(pm,"%s %s %c %d %s\n",cpf,cep,&face,&num,compl);
             
             QuadNode node = QtGetById(quadras,cep); // PEGA A QUADRA
             if(node != NULL){
 
-                ChaveXValor t = createChaveValor(cpf,cep);
-                Generic g = createGeneric("chaveXvalor",t,freeChaveXvalor, NULL);
-                hashInsert(cpfXcep,cpf,g);
+                char *valor = malloc(sizeof(char)*strlen(cep)+1);
+                strcpy(valor,cep);
+
+                hashInsert(cpfXcep,cpf,valor);
 
                 QuadNode node = QtGetById(quadras,cep);
-                g = QtGetInfo(quadras,node);
+                Generic g = QtGetInfo(quadras,node);
                 Quadra quadra = genericGetValores(g);
 
                 Morador morador = createMorador(cpf, quadra, face, num, compl);

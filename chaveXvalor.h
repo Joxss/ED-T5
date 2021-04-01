@@ -14,7 +14,7 @@ typedef void * ChaveXValor;
 /* Inicializa um elemento do tipo chaveXvalor. O ponteiro retornado deve ter sua memoria deslocada utilizando a funcao freeChaveXvalor.
 *  Parâmetros: uma string contendo a chave e outra string contendo o valor.
 *  Retorno: Retorna um ponteiro para um elemento do tipo chaveXvalor. */
-ChaveXValor createChaveValor(char *chave, char *valor);
+ChaveXValor createChaveValor(char *chave, void *valor);
 
 /* Obtem o valor armazenado como chave em um elemento do tipo chaveXvalor.
 *  Parâmetros: Ponteiro não nulo para a ChaveXValor.
@@ -24,16 +24,16 @@ char *chaveXvalorGetChave(ChaveXValor chaveValor);
 /* Obtem o valor armazenado em um elemento do tipo chaveXvalor.
 *  Parâmetros: Ponteiro nao nulo para um elemento do tipo chaveXvalor.
 *  Retorno: Retorna uma string contendo o valor. */
-char *chaveXvalorGetValor(ChaveXValor chaveValor);
+void *chaveXvalorGetValor(ChaveXValor chaveValor);
 
 /* Atualiza o valor de um elemento do tipo chaveXvalor.
-*  Parâmetros: Ponteiro nao nulo para um elemento do tipo chaveXvalor e uma string contendo o novo valor.
-*  Retorno: Não possui retorno. */
-void chaveXvalorSetValor(ChaveXValor chaveValor, char *valor);
+*  Parâmetros: Ponteiro nao nulo para um elemento do tipo chaveXvalor e ponteiro contendo o novo valor.
+*  Retorno: Retorna o valor antigo. */
+void *chaveXvalorSetValor(ChaveXValor chaveValor, void *valor);
 
 /* Desaloca a memoria de um elemento do tipo chaveXvalor.
 *  Parâmetros: Ponteiro não nulo para a ChaveXValor.
 *  Retorno: Não possui retorno */
-void freeChaveXvalor(ChaveXValor chaveValor);
+void *freeChaveXvalor(ChaveXValor chaveValor);
 
 #endif

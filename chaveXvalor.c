@@ -1,16 +1,16 @@
 #include "chaveXvalor.h"
 
 typedef struct{
-    char chave[10];
-    char *valor;
+    char *chave;
+    void *valor;
 }chaveXvalor;
 
-ChaveXValor createChaveValor(char *chave, char *valor){
+ChaveXValor createChaveValor(char *chave, void *valor){
     chaveXvalor *t = malloc(sizeof(chaveXvalor));
 
-    t->valor = malloc(sizeof(char)*strlen(valor)+1);
-    strcpy(t->valor,valor);
+    t->chave = malloc(sizeof(char)*strlen(chave)+1);
     strcpy(t->chave,chave);
+    t->valor = valor;
 
     return t;
 }
@@ -20,20 +20,23 @@ char *chaveXvalorGetChave(ChaveXValor chaveValor){
     return t->chave;
 }
 
-char *chaveXvalorGetValor(ChaveXValor chaveValor){
+void *chaveXvalorGetValor(ChaveXValor chaveValor){
     chaveXvalor *t = (chaveXvalor *) chaveValor;
     return t->valor;
 }
 
-void chaveXvalorSetValor(ChaveXValor chaveValor, char *valor){
+void *chaveXvalorSetValor(ChaveXValor chaveValor, void *valor){
     chaveXvalor *t = (chaveXvalor *) chaveValor;
-    free(t->valor);
-    t->valor = malloc(sizeof(char)*strlen(valor)+1);
-    strcpy(t->valor,valor);
+    void *antigo = t->valor;
+    t->valor = valor;
+    return antigo;
 }
 
-void freeChaveXvalor(ChaveXValor chaveValor){
+void *freeChaveXvalor(ChaveXValor chaveValor){
     chaveXvalor *t = (chaveXvalor *) chaveValor;
-    free(t->valor);
+    void *retorno = t->valor;
+    free(t->chave);
     free(t);
+
+    return retorno;
 }

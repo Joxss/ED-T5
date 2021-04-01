@@ -160,6 +160,21 @@ void freeLista(List l, void(*freeFunc)(void*)){
     free(lista);
 }
 
+void freeListaHT(List l, void(*freeFunc)(void*)){
+    list *lista = (list*) l;
+    No *node;
+    while(lista->prim != NULL){
+        node = lista->prim;
+        lista->prim = lista->prim->prox;
+        
+        if(freeFunc != NULL) freeFunc(freeChaveXvalor(node->data));
+        else freeChaveXvalor(node->data);
+        free(node);
+    }
+    
+    free(lista);
+}
+
 void freeLista2(List l){ // Função para desalocar a memória de listas auxiliares criadas por funções das quadtree
     list *lista = (list*) l;
     No *node;
@@ -172,19 +187,19 @@ void freeLista2(List l){ // Função para desalocar a memória de listas auxilia
     free(lista);
 }
 
-Node listGetById(List l, char id[]){
+Node listGetById(List l, char id[], char*(*getId)(void*)){
 
     list *lista = (list*) l;
     if(lista->tam==0) return NULL;
     No *node = lista->prim;
     
     char currentId[100];
-    strcpy(currentId, genericGetId(node->data));
+    strcpy(currentId, getId(node->data));
 
     while(strcmp(currentId,id) != 0){
         node = node->prox;
         if(node == NULL) return NULL;
-        strcpy(currentId, genericGetId(node->data));
+        strcpy(currentId, getId(node->data));
     }
     
     return node;
