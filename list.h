@@ -27,7 +27,7 @@ int listLenght(List l);
 /* Insere um elemento na Linked List.
 *  Parâmetros: recebe um ponteiro não nulo para a lista e um ponteiro não nulo para as informações do elemento a ser inserido. 
 *  Retorno: Retorna um ponteiro para o nó do elemento adicionado. */
-Node listInsert(List l, Generic n);
+Node listInsert(List l, void* n);
 
 /* Procura por um elemento na Linked List a partir de seu id.
 *  Parâmetros: recebe um ponteiro não nulo para a lista e um tipo char[] representando o id do elemento desejado e um ponteiro para a função que obtem o id do elemento armazenado. 
@@ -87,7 +87,7 @@ Node nodeGetNext(Node n);
 /* Retorna o valor armazenado dentro do node.
 *  Parâmetros: Um ponteiro não nulo para o nó.
 *  Retorno: Retorna um generic ou um valor nulo caso não haja valores armazenado no node. */
-Generic nodeGetData(Node n);
+void* nodeGetData(Node n);
 
 /* Obtem o nó anterior de um nó.
 *  Parâmetros: Recebe um ponteiro não nulo para um nó.
@@ -102,11 +102,11 @@ Node listGetLast(List l);
 /* Insere um elemento na Linked List antes de um certo nó.
 *  Parâmetros: Um ponteiro não nulo para a lista , um ponteiro não nulo para o nó específico e um ponteiro não nulo para as informações do elemento a ser inserido.
 *  Retorno: Retorna um ponteiro para o nó do elemento adicionado. */
-Node listInsertBefore(List l, Node t, Generic g);
+Node listInsertBefore(List l, Node t, void* g);
 
 /* Insere um elemento na Linked List depois de um certo nó.
 *  Parâmetros: Um ponteiro não nulo para a lista , um ponteiro não nulo para o nó específico e um ponteiro não nulo para as informações do elemento a ser inserido.
 *  Retorno: Retorna um ponteiro para o nó do elemento adicionado */
-Node listInsertAfter(List l, Node t, Generic g);
+Node listInsertAfter(List l, Node t, void* g);
 
 #endif

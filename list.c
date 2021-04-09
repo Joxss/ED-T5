@@ -3,7 +3,7 @@
 typedef struct no{
     struct no *ant;
     struct no *prox;
-    Generic data;
+    void *data;
 }No;
 
 typedef struct {
@@ -25,7 +25,7 @@ int listLenght(List l){
     return lista->tam;
 }
 
-Node listInsert(List l, Generic g){
+Node listInsert(List l, void* g){
     No *node = (No*)malloc(sizeof(No));
     node->data = g;
 
@@ -247,12 +247,12 @@ Node nodeGetPrevious(Node n){
     return node->ant;
 }
 
-Generic nodeGetData(Node n){
+void *nodeGetData(Node n){
     No *node = (No*) n;
     return node->data;
 }
 
-Node listInsertBefore(List l, Node t, Generic g){
+Node listInsertBefore(List l, Node t, void* g){
     list *lista = (list*) l;
     No *targ = (No*)t;
     No *node = (No*)malloc(sizeof(No));
@@ -272,7 +272,7 @@ Node listInsertBefore(List l, Node t, Generic g){
     return node;
 }
 
-Node listInsertAfter(List l, Node t, Generic g){
+Node listInsertAfter(List l, Node t, void* g){
     list *lista = (list*) l;
     No *targ = (No*)t;
     No *node = (No*)malloc(sizeof(No));
