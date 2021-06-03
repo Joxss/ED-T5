@@ -14,7 +14,10 @@
 int main(int argc, char *argv[]){
     Grafo g = createGrafo(10);
 
-    Ponto p = createPoint(1,1);
+    Ponto p = createPoint(21,21);
+    grafoInsereVertice(g,"vertice0",p);
+
+    p = createPoint(1,1);
     grafoInsereVertice(g,"vertice1",p);
 
     p = createPoint(21,21);
@@ -33,27 +36,51 @@ int main(int argc, char *argv[]){
     grafoInsereVertice(g,"vertice6",p);
 
     p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice1","vertice3",p);
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice1","vertice2",p);
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice1","vertice6",p);
+    grafoInsereVertice(g,"vertice7",p);
 
     p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice2","vertice5",p);
+    grafoInsereVertice(g,"vertice8",p);
+
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice0","vertice1",p,4,0);
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice0","vertice7",p,8,0);
+
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice1","vertice7",p,11,0);
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice1","vertice2",p,8,0);
+
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice2","vertice3",p,7,0);
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice2","vertice5",p,4,0);
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice2","vertice8",p,2,0);
     
     p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice3","vertice2",p);
+    grafoInsereAresta(g,"vertice3","vertice4",p,9,0);
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice3","vertice5",p,14,0);
 
     p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice5","vertice6",p);
+    grafoInsereAresta(g,"vertice4","vertice5",p,10,0);
 
     p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice6","vertice6",p);
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice6","vertice4",p);
+    grafoInsereAresta(g,"vertice5","vertice6",p,2,0);
 
-    printGrafo(g);
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice6","vertice7",p,1,0);
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice6","vertice8",p,6,0);
+
+    p = createPoint(21,21);
+    grafoInsereAresta(g,"vertice7","vertice8",p,7,0);
+
+    //printGrafo(g);
+    getIndexes(g);
+
+    dijkstra(g,0);
 
     freeGrafo(g,freePonto,freePonto);
     
