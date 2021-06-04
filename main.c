@@ -15,31 +15,31 @@ int main(int argc, char *argv[]){
     Grafo g = createGrafo(10);
 
     Ponto p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice0",p);
-
-    p = createPoint(1,1);
-    grafoInsereVertice(g,"vertice1",p);
-
-    p = createPoint(21,21);
     grafoInsereVertice(g,"vertice2",p);
 
-    p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice3",p);
-
-    p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice4",p);
+    p = createPoint(1,1);
+    grafoInsereVertice(g,"vertice6",p);
 
     p = createPoint(21,21);
     grafoInsereVertice(g,"vertice5",p);
 
     p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice6",p);
+    grafoInsereVertice(g,"vertice4",p);
+
+    p = createPoint(21,21);
+    grafoInsereVertice(g,"vertice1",p);
+
+    p = createPoint(21,21);
+    grafoInsereVertice(g,"vertice8",p);
+
+    p = createPoint(21,21);
+    grafoInsereVertice(g,"vertice0",p);
 
     p = createPoint(21,21);
     grafoInsereVertice(g,"vertice7",p);
 
     p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice8",p);
+    grafoInsereVertice(g,"vertice3",p);
 
     p = createPoint(21,21);
     grafoInsereAresta(g,"vertice0","vertice1",p,4,0);
@@ -78,9 +78,13 @@ int main(int argc, char *argv[]){
     grafoInsereAresta(g,"vertice7","vertice8",p,7,0);
 
     //printGrafo(g);
-    getIndexes(g);
+    //getIndexes(g);
 
-    dijkstra(g,0);
+    int *dist = dijkstra(g,"vertice3");
+    for(int i=0; i<9; i++){
+        printf("%d até %d: %d\n",3,i, dist[i]);
+    }
+    free(dist);
 
     freeGrafo(g,freePonto,freePonto);
     

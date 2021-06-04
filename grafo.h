@@ -16,6 +16,6 @@ void printGrafo(Grafo g);
 
 void getIndexes(Grafo g);
 
-void dijkstra(Grafo g, int src);
+int* dijkstra(Grafo g, char *idRaiz);
 
 #endif
