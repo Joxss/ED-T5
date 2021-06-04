@@ -88,6 +88,48 @@ aresta* _criaAresta(grafo *graf, char *v1, char *v2, void *info, int distancia, 
     return edge;
 }
 
+aresta* _getAresta(Grafo g, char *v1, char *v2){
+    grafo *graf = (grafo*)g;
+    int indexV1 = _getIndex(graf,v1);
+    List arestas = graf->vertices[indexV1]->adjacentes;
+    Node aux = listGetFirst(arestas);
+    aresta *edge;
+    while(aux){
+        edge = nodeGetData(aux);
+        if(strcmp(edge->fim->id,v2) == 0)
+            return edge;
+
+        aux = nodeGetNext(aux);
+    }
+    return NULL;
+}
+
+int grafoExisteAresta(Grafo g, char *v1, char *v2){
+    if(_getAresta(g,v1,v2))
+        return 0;
+    return 1;
+}
+
+void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*)){
+    grafo *graf = (grafo*)g;
+    int indexV1 = _getIndex(graf,v1);
+    List arestas = graf->vertices[indexV1]->adjacentes;
+    Node aux = listGetFirst(arestas);
+    aresta *edge;
+    while(aux){
+        edge = nodeGetData(aux);
+        if(strcmp(edge->fim->id,v2) == 0)
+            break;
+
+        aux = nodeGetNext(aux);
+    }
+    if(!aux){
+        freeArestaData(listRemoveNode(arestas,aux));
+        printf("Removeu\n");
+    }
+    return;
+}
+
 void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info, int dist, int velocidade){
     grafo *graf = (grafo*)g;
     aresta *edge = _criaAresta(graf,v1,v2,info,dist,velocidade);
@@ -164,20 +206,6 @@ void relaxa(grafo* grafo, int* distancia, int* pai, int no1, int no2) {
         }
     }
 }
-
-// void relaxa(Grafo* grafo, int* distancia, int* pai, int no1, int no2) {
-//     Adjacencia* aresta = grafo->arranjo[no1].inicio;
-
-//     while(aresta && aresta->vertice != no2) 
-//         aresta = aresta->proximo;
-
-//     if(aresta) {
-//         if(distancia[no2] > distancia[no1] + aresta->peso) {
-//             distancia[no2] = distancia[no1] + aresta->peso;
-//             pai[no2] = no1;
-//         }
-//     }
-// }
 
 int existeAberto(grafo* grafo, int* aberto) {
     for(int i = 0; i < grafo->qtdAtual; i++) {

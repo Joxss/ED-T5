@@ -1,0 +1,4 @@
+@e? R1 b02.2 N 50
+@g? R3 hnb03.8
+ccv ciclo-via
+pb? trajbike-r1r3_01 R1 R3 #55D400

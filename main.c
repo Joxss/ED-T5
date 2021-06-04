@@ -8,7 +8,6 @@
 #include "convexHull.h"
 #include "morador.h"
 #include "grafo.h"
-#include <time.h>
 
 
 int main(int argc, char *argv[]){
@@ -77,14 +76,16 @@ int main(int argc, char *argv[]){
     p = createPoint(21,21);
     grafoInsereAresta(g,"vertice7","vertice8",p,7,0);
 
+    printf("%d\n",grafoExisteAresta(g,"vertice7","vertice8"));
+    grafoRemoveAresta(g,"vertice0","vertice7",freePonto);
     //printGrafo(g);
     //getIndexes(g);
 
     int *dist = dijkstra(g,"vertice3");
-    for(int i=0; i<9; i++){
-        printf("%d até %d: %d\n",3,i, dist[i]);
-    }
-    free(dist);
+    // for(int i=0; i<9; i++){
+    //     printf("%d até %d: %d\n",3,i, dist[i]);
+    // }
+    // free(dist);
 
     freeGrafo(g,freePonto,freePonto);
     

@@ -1,0 +1,4 @@
+@e? R1 b02.2 N 50
+@e? R2 b010.10 L 70
+ccv ciclo-via
+pb? trajbike-r1r2_01 R1 R2 #55D400
