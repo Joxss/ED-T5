@@ -2,8 +2,8 @@ siguel: xablau
 
 FLAGS = -fstack-protector-all -std=c99
 
-xablau: main.o list.o qry.o convexHull.o calculos.o ler_file.o svg.o txt.o generico.o quadrilatero.o ponto.o poligono.o circulo.o retangulo.o quadra.o texto.o linha.o args.o QuadTree.o hashTable.o pessoa.o morador.o estabelecimento.o chaveXvalor.o grafo.o
-	gcc -o siguel main.o list.o qry.o convexHull.o calculos.o ler_file.o svg.o txt.o generico.o quadrilatero.o ponto.o poligono.o circulo.o retangulo.o quadra.o texto.o linha.o args.o QuadTree.o hashTable.o pessoa.o morador.o estabelecimento.o chaveXvalor.o grafo.o -lm $(FLAGS) 
+xablau: main.o list.o qry.o convexHull.o calculos.o ler_file.o svg.o txt.o generico.o quadrilatero.o ponto.o poligono.o circulo.o retangulo.o quadra.o texto.o linha.o args.o QuadTree.o hashTable.o pessoa.o morador.o estabelecimento.o chaveXvalor.o grafo.o rua.o
+	gcc -o siguel main.o list.o qry.o convexHull.o calculos.o ler_file.o svg.o txt.o generico.o quadrilatero.o ponto.o poligono.o circulo.o retangulo.o quadra.o texto.o linha.o args.o QuadTree.o hashTable.o pessoa.o morador.o estabelecimento.o chaveXvalor.o grafo.o rua.o -lm $(FLAGS) 
 	rm -rf *.o *~
 
 main.o: main.c ler_file.h args.h 
@@ -80,6 +80,9 @@ chaveXvalor.o: chaveXvalor.c chaveXvalor.h
 
 grafo.o: grafo.c grafo.h
 	gcc -o grafo.o grafo.c -c $(FLAGS)
+
+rua.o: rua.c rua.h
+	gcc -o rua.o rua.c -c $(FLAGS)
 
 clean:
 	rm -rf *.o *~ siguel

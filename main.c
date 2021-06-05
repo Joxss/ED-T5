@@ -8,86 +8,87 @@
 #include "convexHull.h"
 #include "morador.h"
 #include "grafo.h"
+#include "rua.h"
 
 
 int main(int argc, char *argv[]){
     Grafo g = createGrafo(10);
 
     Ponto p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice2",p);
+    grafoInsereVertice(g,"vertice0",p);
 
     p = createPoint(1,1);
-    grafoInsereVertice(g,"vertice6",p);
-
-    p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice5",p);
-
-    p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice4",p);
-
-    p = createPoint(21,21);
     grafoInsereVertice(g,"vertice1",p);
 
     p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice8",p);
-
-    p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice0",p);
-
-    p = createPoint(21,21);
-    grafoInsereVertice(g,"vertice7",p);
+    grafoInsereVertice(g,"vertice2",p);
 
     p = createPoint(21,21);
     grafoInsereVertice(g,"vertice3",p);
 
     p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice0","vertice1",p,4,0);
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice0","vertice7",p,8,0);
+    grafoInsereVertice(g,"vertice4",p);
 
     p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice1","vertice7",p,11,0);
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice1","vertice2",p,8,0);
+    grafoInsereVertice(g,"vertice5",p);
 
     p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice2","vertice3",p,7,0);
+    grafoInsereVertice(g,"vertice6",p);
+
     p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice2","vertice5",p,4,0);
+    grafoInsereVertice(g,"vertice7",p);
+
     p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice2","vertice8",p,2,0);
+    grafoInsereVertice(g,"vertice8",p);
+
+    Rua r = createRua("nomedarua","cepdireita","cepesquerda",4.5,4.5);
+    grafoInsereAresta(g,"vertice0","vertice1",r,4.5,4.5);
+    r = createRua("nomedarua","cepdireita","cepesquerda",8.5,8.5);
+    grafoInsereAresta(g,"vertice0","vertice7",r,8.5,8.5);
+
+    r = createRua("nomedarua","cepdireita","cepesquerda",11.5,11.5);
+    grafoInsereAresta(g,"vertice1","vertice7",r,11.5,11.5);
+    r = createRua("nomedarua","cepdireita","cepesquerda",8.5,8.5);
+    grafoInsereAresta(g,"vertice1","vertice2",r,8.5,8.5);
+
+    r = createRua("nomedarua","cepdireita","cepesquerda",7.5,7.5);
+    grafoInsereAresta(g,"vertice2","vertice3",r,7.5,7.5);
+    r = createRua("nomedarua","cepdireita","cepesquerda",4.5,4.5);
+    grafoInsereAresta(g,"vertice2","vertice5",r,4.5,4.5);
+    r = createRua("nomedarua","cepdireita","cepesquerda",2.5,2.5);
+    grafoInsereAresta(g,"vertice2","vertice8",r,2.5,2.5);
     
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice3","vertice4",p,9,0);
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice3","vertice5",p,14,0);
+    r = createRua("nomedarua","cepdireita","cepesquerda",9.5,9.5);
+    grafoInsereAresta(g,"vertice3","vertice4",r,9.5,9.5);
+    r = createRua("nomedarua","cepdireita","cepesquerda",14.5,14.5);
+    grafoInsereAresta(g,"vertice3","vertice5",r,14.5,14.5);
 
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice4","vertice5",p,10,0);
+    r = createRua("nomedarua","cepdireita","cepesquerda",10.5,10.5);
+    grafoInsereAresta(g,"vertice4","vertice5",r,10.5,10.5);
 
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice5","vertice6",p,2,0);
+    r = createRua("nomedarua","cepdireita","cepesquerda",2.5,2.5);
+    grafoInsereAresta(g,"vertice5","vertice6",r,2.5,2.5);
 
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice6","vertice7",p,1,0);
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice6","vertice8",p,6,0);
+    r = createRua("nomedarua","cepdireita","cepesquerda",1.5,1.5);
+    grafoInsereAresta(g,"vertice6","vertice7",r,1.5,1.5);
+    r = createRua("nomedarua","cepdireita","cepesquerda",6.5,6.5);
+    grafoInsereAresta(g,"vertice6","vertice8",r,6.5,6.5);
 
-    p = createPoint(21,21);
-    grafoInsereAresta(g,"vertice7","vertice8",p,7,0);
+    r = createRua("nomedarua","cepdireita","cepesquerda",7.5,7.5);
+    grafoInsereAresta(g,"vertice7","vertice8",r,7.5,7.5);
 
-    printf("%d\n",grafoExisteAresta(g,"vertice7","vertice8"));
-    grafoRemoveAresta(g,"vertice0","vertice7",freePonto);
+    //printf("%d\n",grafoExisteAresta(g,"vertice7","vertice8"));
+    //grafoRemoveAresta(g,"vertice0","vertice7",freePonto);
     //printGrafo(g);
     //getIndexes(g);
 
-    int *dist = dijkstra(g,"vertice3");
-    // for(int i=0; i<9; i++){
-    //     printf("%d até %d: %d\n",3,i, dist[i]);
-    // }
-    // free(dist);
+    double *dist = dijkstra(g,"vertice3",ruaGetVelocidadeMedia);
+    for(int i=0; i<9; i++){
+        printf("%d até %d: %lf\n",3,i, dist[i]);
+    }
+    free(dist);
 
-    freeGrafo(g,freePonto,freePonto);
+    freeGrafo(g,freePonto,freeRua);
     
 }
 

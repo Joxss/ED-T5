@@ -49,4 +49,10 @@ double ruaGetVelocidadeMedia(Rua r);
 */
 double ruaGetTempo(Rua r);
 
+/* Desaloca a memória de uma rua.
+*  Parâmetros: Recebe um ponteiro não nulo para a rua.
+*  Retorno: Não possui retorno.
+*/
+void freeRua(Rua r);
+
 #endif

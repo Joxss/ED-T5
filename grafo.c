@@ -13,8 +13,8 @@ typedef struct{
 typedef struct{
     vertice *inicio;
     vertice *fim;
-    int distancia;
-    int velocidadeMedia;
+    double distancia;
+    double velocidadeMedia;
     void *data;
 }aresta;
 
@@ -70,7 +70,7 @@ void grafoInsereVertice(Grafo g, char *id, void *info){
     graf->qtdAtual++;
 }
 
-aresta* _criaAresta(grafo *graf, char *v1, char *v2, void *info, int distancia, int velocidade){
+aresta* _criaAresta(grafo *graf, char *v1, char *v2, void *info, double distancia, double velocidade){
     int *index1 = hashGetKey(graf->indices,v1);
     vertice *vertice1 = graf->vertices[*index1];
 
@@ -106,8 +106,8 @@ aresta* _getAresta(Grafo g, char *v1, char *v2){
 
 int grafoExisteAresta(Grafo g, char *v1, char *v2){
     if(_getAresta(g,v1,v2))
-        return 0;
-    return 1;
+        return 1;
+    return 0;
 }
 
 void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*)){
@@ -130,7 +130,7 @@ void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*)
     return;
 }
 
-void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info, int dist, int velocidade){
+void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info, double dist, double velocidade){
     grafo *graf = (grafo*)g;
     aresta *edge = _criaAresta(graf,v1,v2,info,dist,velocidade);
     
@@ -181,7 +181,7 @@ void printGrafo(Grafo g){
     }
 }
 
-void iniciaDijkstra(grafo* grafo, int* distancia, int* pai, int noInicial) {
+void iniciaDijkstra(grafo* grafo, double* distancia, int* pai, int noInicial) {
     for(int i = 0; i < grafo->qtdAtual; i++) {
         distancia[i] = INT_MAX;
         pai[i] = -1;
@@ -189,7 +189,7 @@ void iniciaDijkstra(grafo* grafo, int* distancia, int* pai, int noInicial) {
     distancia[noInicial] = 0;
 }
 
-void relaxa(grafo* grafo, int* distancia, int* pai, int no1, int no2) {
+void relaxa(grafo* grafo, double* distancia, int* pai, int no1, int no2, double(*getPeso)(void*)) {
     Node nodeEdge = listGetFirst(grafo->vertices[no1]->adjacentes);
     aresta *edge = NULL;
     while(nodeEdge){
@@ -200,8 +200,8 @@ void relaxa(grafo* grafo, int* distancia, int* pai, int no1, int no2) {
     }
 
     if(nodeEdge && edge) {
-        if(distancia[no2] > distancia[no1] + edge->distancia) {
-            distancia[no2] = distancia[no1] + edge->distancia;
+        if(distancia[no2] > distancia[no1] + getPeso(edge->data)) {
+            distancia[no2] = distancia[no1] + getPeso(edge->data);
             pai[no2] = no1;
         }
     }
@@ -216,7 +216,7 @@ int existeAberto(grafo* grafo, int* aberto) {
     return 0;
 }
 
-int menorDistancia(grafo* grafo, int* aberto, int* distancia) {
+int menorDistancia(grafo* grafo, int* aberto, double* distancia) {
     int i, menor;
     
     for(i = 0; i < grafo->qtdAtual; i++) {
@@ -257,10 +257,10 @@ void printaCaminhos(grafo *graph, int *pai, int raiz){
     }
 }
 
-int* dijkstra(Grafo g, char *idRaiz) {
+double* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)) {
     grafo *graph = (grafo*)g;
     int noInicial = _getIndex(graph,idRaiz);
-    int* distancia = (int*) malloc(graph->qtdAtual*sizeof(int));
+    double* distancia = (double*) malloc(graph->qtdAtual*sizeof(double));
     int pai[graph->qtdAtual];
     int menor;
     int aberto[graph->qtdAtual];
@@ -280,7 +280,7 @@ int* dijkstra(Grafo g, char *idRaiz) {
         nodeEdge = listGetFirst(graph->vertices[menor]->adjacentes);
         while(nodeEdge) {
             edge = nodeGetData(nodeEdge);
-            relaxa(graph, distancia, pai, menor, edge->fim->index);
+            relaxa(graph, distancia, pai, menor, edge->fim->index,getPeso);
             nodeEdge = nodeGetNext(nodeEdge);
         }
     }
