@@ -5,7 +5,7 @@
 #define INT_MAX 999999999
 typedef struct{
     int index;
-    char id[50];
+    char id[100];
     void *data;
     List adjacentes;
 }vertice;
@@ -13,8 +13,6 @@ typedef struct{
 typedef struct{
     vertice *inicio;
     vertice *fim;
-    double distancia;
-    double velocidadeMedia;
     void *data;
 }aresta;
 
@@ -57,7 +55,7 @@ vertice* _criaVertice(char *id, void *info, int index){
     return vertex;
 }
 
-void grafoInsereVertice(Grafo g, char *id, void *info){
+Vertice grafoInsereVertice(Grafo g, char *id, void *info){
     grafo *graf = (grafo*)g;
     vertice *vertex = _criaVertice(id,info,graf->qtdAtual);
 
@@ -68,9 +66,15 @@ void grafoInsereVertice(Grafo g, char *id, void *info){
 
     hashInsert(graf->indices,vertex->id,indice);
     graf->qtdAtual++;
+    return vertex;
 }
 
-aresta* _criaAresta(grafo *graf, char *v1, char *v2, void *info, double distancia, double velocidade){
+char* verticeGetId(Vertice v){
+    vertice *vertex = (vertice*)v;
+    return vertex->id;
+}
+
+aresta* _criaAresta(grafo *graf, char *v1, char *v2, void *info){
     int *index1 = hashGetKey(graf->indices,v1);
     vertice *vertice1 = graf->vertices[*index1];
 
@@ -81,9 +85,6 @@ aresta* _criaAresta(grafo *graf, char *v1, char *v2, void *info, double distanci
     edge->inicio = vertice1;
     edge->fim = vertice2;
     edge->data = info;
-
-    edge->distancia = distancia;
-    edge-> velocidadeMedia = velocidade;
 
     return edge;
 }
@@ -130,9 +131,9 @@ void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*)
     return;
 }
 
-void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info, double dist, double velocidade){
+void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info){
     grafo *graf = (grafo*)g;
-    aresta *edge = _criaAresta(graf,v1,v2,info,dist,velocidade);
+    aresta *edge = _criaAresta(graf,v1,v2,info);
     
     int *indexInicio = hashGetKey(graf->indices,v1);
     vertice *inicio = graf->vertices[*indexInicio];

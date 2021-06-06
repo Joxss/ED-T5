@@ -1,6 +1,7 @@
 #include "ler_file.h"
 #include "pessoa.h"
 #include "morador.h"
+#include "rua.h"
 
 void _setDDShadow(QuadTree quadras, QuadNode densidade){
     if(densidade == NULL) return;
@@ -183,6 +184,54 @@ void leGeo(QuadTree * trees, Htable cepXQuadra,char input[]){
     fclose(geo);
 }
 
+void _setRegistrador(Ponto registradores[], char string[], Ponto coord){
+    if(!strcmp(string,"R0")){
+        if(registradores[0] != NULL)
+            freePonto(registradores[0]);
+        registradores[0] = coord;
+    }else if(!strcmp(string,"R1")){
+        if(registradores[1] != NULL)
+            freePonto(registradores[1]);
+        registradores[1] = coord;
+    }else if(!strcmp(string,"R2")){
+        if(registradores[2] != NULL)
+            freePonto(registradores[2]);
+        registradores[2] = coord;
+    }else if(!strcmp(string,"R3")){
+        if(registradores[3] != NULL)
+            freePonto(registradores[3]);
+        registradores[3] = coord;
+    }else if(!strcmp(string,"R4")){
+        if(registradores[4] != NULL)
+            freePonto(registradores[4]);
+        registradores[4] = coord;
+    }else if(!strcmp(string,"R5")){
+        if(registradores[5] != NULL)
+            freePonto(registradores[5]);
+        registradores[5] = coord;
+    }else if(!strcmp(string,"R6")){
+        if(registradores[6] != NULL)
+            freePonto(registradores[6]);
+        registradores[6] = coord;
+    }else if(!strcmp(string,"R7")){
+        if(registradores[7] != NULL)
+            freePonto(registradores[7]);
+        registradores[7] = coord;
+    }else if(!strcmp(string,"R8")){
+        if(registradores[8] != NULL)
+            freePonto(registradores[8]);
+        registradores[8] = coord;
+    }else if(!strcmp(string,"R9")){
+        if(registradores[9] != NULL)
+            freePonto(registradores[9]);
+        registradores[9] = coord;
+    }else if(!strcmp(string,"R10")){
+        if(registradores[10] != NULL)
+            freePonto(registradores[10]);
+        registradores[10] = coord;
+    }
+}
+
 void leQry( QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdescricao, Htable cpfXcep, Htable cepXquadra, Diretorios dir){
     
     
@@ -194,7 +243,13 @@ void leQry( QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdesc
     char comando[10];
     char cpf[15], cnpj[17], compl[50];
     char face;
+
+    Ponto registradores[11];
+    char registrador[10];
      
+    for(int i=0;i<11;i++)
+        registradores[i] = NULL;
+
     FILE *txt = fopen(getPathTxtQry(dir),"w");
     FILE *qry = fopen(getPathQry(dir),"r");
     
@@ -334,6 +389,14 @@ void leQry( QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdesc
             qryCatac(txt, trees[3], trees[4], trees[5], trees[6], trees[10], trees[11], qryFigures, x, y, r);
 
         }
+        else if(!strcmp(comando,"@m?")){
+            fscanf(qry,"%s %s",registrador,cpf);
+            QuadNode nodeMorador = QtGetById(trees[10],cpf);
+            if(nodeMorador == NULL) continue;
+            Ponto p = genericGetPonto(QtGetInfo(trees[10],nodeMorador));
+            Ponto copia = createPoint(pontoGetX(p),pontoGetY(p));
+            _setRegistrador(registradores,registrador,copia);
+        }
     }
     
     fclose(txt);
@@ -426,7 +489,48 @@ void lePm(QuadTree quadras, QuadTree moradores, Htable cpfXpessoa, Htable cpfXce
     fclose(pm);
 }
 
+void leVia(Htable cepXquadra, QuadTree vertices, Grafo ruas, char input[]){
+    char comando[5];
+    double x, y, distancia, velocidade;
+    char id[100], id1[100], id2[100], cepDireito[50], cepEsquerdo[50], nome[100];
 
+    FILE *via = fopen(input,"r");
+    while(!feof(via)){
+        fscanf(via,"%s",comando);
 
+        if(strcmp("v",comando) == 0){
+            fscanf(via,"%s %lf %lf",id,&x,&y);
+            Ponto p = createPoint(x,y);
+            Vertice vertice = grafoInsereVertice(ruas,id,p);
+            QtInsert(vertices,p,vertice);
+        }else if(strcmp("e",comando) == 0){
+            fscanf(via,"%s %s %s %s %lf %lf %s",id1,id2,cepDireito,cepEsquerdo,&distancia,&velocidade,nome);
+            Quadra quadraDireita = hashGetKey(cepXquadra,cepDireito);
+            Quadra quadraEsquerda = hashGetKey(cepXquadra,cepEsquerdo);
+            Rua r = createRua(nome,quadraDireita,quadraEsquerda,distancia,velocidade);
+            grafoInsereAresta(ruas,id1,id2,r);
+        }
+    }
+    fclose(via);
+}
 
+int getQtdVerticesVia(char input[]){
+    FILE *via = fopen(input,"r");
+    int contador=0;
+    char comando[5];
+    double x, y, distancia, velocidade;
+    char id[100], id1[100], id2[100], cepDireito[50], cepEsquerdo[50], nome[100];
+    while(!feof(via)){
+        fscanf(via,"%s",comando);
+
+        if(strcmp("v",comando) == 0){
+            fscanf(via,"%s %lf %lf",id,&x,&y);
+            contador++;
+        }else if(strcmp("e",comando) == 0){
+            fscanf(via,"%s %s %s %s %lf %lf %s",id1,id2,cepDireito,cepEsquerdo,&distancia,&velocidade,nome);
+        }
+    }
+    fclose(via);
+    return contador;
+}
 //

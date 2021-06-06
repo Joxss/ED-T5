@@ -4,14 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "quadra.h"
 
 typedef void* Rua;
 
 /* Inicializa uma nova rua. O ponteiro retornado deve ter sua memoria desalocada utilizando a funcao freeRua.
-*  Parâmetros: recebe strings contendo o nome (tam<=100), id da quadra ao lado direito e id da quadra ao lado esquerdo (tam<=50)
+*  Parâmetros: recebe uma string contendo o nome (tam<=100), ponteiros para as quadras do lado direito e esquerdo (podem ser NULL)
                e variáveis double contendo a distancia daquela rua e a velocidade média naquela rua.
 *  Retorno: Retorna um ponteiro para a rua criada. */
-Rua createRua(char nome[], char cepLadoDireito[], char cepLadoEsquerdo[], double distancia, double velocidadeMedia);
+Rua createRua(char nome[], Quadra quadraDireita, Quadra quadraEsquerda, double distancia, double velocidadeMedia);
 
 /* Obtém o nome de uma rua.
 *  Parâmetros: Recebe um ponteiro não nulo para a rua.
@@ -49,7 +50,7 @@ double ruaGetVelocidadeMedia(Rua r);
 */
 double ruaGetTempo(Rua r);
 
-/* Desaloca a memória de uma rua.
+/* Desaloca a memória de uma rua. Não desaloca a memória dos ponteiros das quadras do lado direito e esquerdo
 *  Parâmetros: Recebe um ponteiro não nulo para a rua.
 *  Retorno: Não possui retorno.
 */

@@ -56,6 +56,11 @@ char *getPathEC(Diretorios d);
  * Retorno: Caso exista o diretório desejado, retorna uma string contendo o diretório, caso contrário retorna NULL. */
 char *getPathPM(Diretorios d);
 
+/**Obtém o diretorio do arquivo .via
+ * Parâmetros: Um ponteiro não nulo para os diretórios.
+ * Retorno: Caso exista o diretório desejado, retorna uma string contendo o diretório, caso contrário retorna NULL. */
+char *getPathVia(Diretorios d);
+
 /**Obtém o diretorio do arquivo qry com sufixo. A string retornada precisa ser desalocada separadamente.
  * Parâmetro: Um ponteiro não nulo para os Diretorios
  * Retorno: O path já com o sufixo para o arquivo .svg

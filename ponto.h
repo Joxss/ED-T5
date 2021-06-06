@@ -41,6 +41,11 @@ void pontoSetY(Ponto p, double y);
 *  Retorno: Retorna o ponto recebido por parâmetro */
 Ponto pontoGetPonto(Ponto p);
 
+/* Retorna a string "ponto". Função necessario apenas para criar uma quadtree de pontos.
+*  Parâmetros: Recebe um ponto P.
+*  Retorno: Retorna a string "ponto". */
+char *pontoGetId(Ponto p);
+
 /* Desaloca a memória de um ponto
 *  Parâmetros: Recebe um ponteiro não nulo para o ponto
 *  Retorno: Não possui retorno*/

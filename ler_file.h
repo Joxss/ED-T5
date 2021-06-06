@@ -14,6 +14,7 @@
 #include "QuadTree.h"
 #include "hashTable.h"
 #include "chaveXvalor.h"
+#include "grafo.h"
 
 /* Lê todas as linhas de um arquivo .geo e armazena cada elemento em sua respectiva quadtree.
 *  Parâmetros: Recebe um vetor de quadtrees contendo ponteiros nao nulos para as quadtrees: circulos, retangulos, textos, quadras, hidrantes, semaforos, radios, postos, regioes, 
@@ -42,5 +43,8 @@ void leEc(QuadTree quadras, QuadTree estabelecimentos, Htable tipoXdescricao, ch
 *  Retorno: Não possui retorno. */
 void lePm(QuadTree quadras, QuadTree moradores, Htable cpfXpessoa, Htable cpfXcep, char input[]);
 
+void leVia(Htable cepXquadra, QuadTree vertices, Grafo ruas, char input[]);
+
+int getQtdVerticesVia(char input[]);
 
 #endif

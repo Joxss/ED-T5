@@ -6,6 +6,7 @@ typedef struct dire{
     char *pm;
     char *svg;
     char *qry;
+    char *via;
     char *svgQry;
     char *txtQry;
 }diretorios;
@@ -136,6 +137,7 @@ Diretorios defineArgs(int argc, char* argv[]){ // DEFINE CADA ARGUMENTO EM SUA R
     char *arqQry = NULL;
     char *arqEC = NULL;
     char *arqPM = NULL;
+    char *arqVia = NULL;
 
     diretorios *dir = (diretorios*)malloc(sizeof(diretorios));
     dir->qry = NULL;
@@ -143,6 +145,7 @@ Diretorios defineArgs(int argc, char* argv[]){ // DEFINE CADA ARGUMENTO EM SUA R
     dir->txtQry = NULL;
     dir->ec = NULL;
     dir->pm = NULL;
+    dir->via = NULL;
     for(int i=1;i<argc;i++){
         if(strcmp(argv[i],"-e")==0){
             i++;
@@ -171,6 +174,10 @@ Diretorios defineArgs(int argc, char* argv[]){ // DEFINE CADA ARGUMENTO EM SUA R
             i++;
             arqPM = malloc(sizeof(char)*strlen(argv[i])+1);
             strcpy(arqPM,argv[i]);
+        }else if(strcmp(argv[i],"-v")==0){
+            i++;
+            arqVia = malloc(sizeof(char)*strlen(argv[i])+1);
+            strcpy(arqVia,argv[i]);
         }
     }
     if(dirEntrada==NULL){
@@ -186,12 +193,19 @@ Diretorios defineArgs(int argc, char* argv[]){ // DEFINE CADA ARGUMENTO EM SUA R
             dir->pm = malloc(sizeof(char)*strlen(arqPM)+1);
             strcpy(dir->pm,arqPM);
         }
+
+        if(arqVia != NULL){
+            dir->via = malloc(sizeof(char)*strlen(arqVia)+1);
+            strcpy(dir->via,arqVia);
+        }
     }
     else{
         dir->geo = getDirEntrada(dirEntrada,arqGeo);
         if(arqEC != NULL) dir->ec = getDirEntrada(dirEntrada,arqEC);
 
         if(arqPM != NULL) dir->pm = getDirEntrada(dirEntrada,arqPM);
+
+        if(arqVia != NULL) dir->via = getDirEntrada(dirEntrada,arqVia);
     }
     dir->svg = getDirFile(arqGeo,dirSaida,'s');
     if(arqQry!=NULL){
@@ -209,6 +223,7 @@ Diretorios defineArgs(int argc, char* argv[]){ // DEFINE CADA ARGUMENTO EM SUA R
 
     if(arqEC != NULL) free(arqEC);
     if(arqPM != NULL) free(arqPM);
+    if(arqVia != NULL) free(arqVia);
 
     free(dirEntrada);
     free(dirSaida);
@@ -227,6 +242,7 @@ void deleteDir(Diretorios d){ // DESALOCA A MEMÓRIA DOS DIRETORIOS DE ENTRADA E
     }
     if(dir->ec != NULL) free(dir->ec);
     if(dir->pm != NULL) free(dir->pm);
+    if(dir->via != NULL) free(dir->via);
     free(dir);
 }
 
@@ -263,6 +279,11 @@ char *getPathEC(Diretorios d){
 char *getPathPM(Diretorios d){
     diretorios *dir = (diretorios*) d;
     return dir->pm;
+}
+
+char *getPathVia(Diretorios d){
+    diretorios *dir = (diretorios*) d;
+    return dir->via;
 }
 
 char *getPathSufix(Diretorios d, char *sufixo){

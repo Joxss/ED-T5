@@ -36,6 +36,10 @@ Ponto pontoGetPonto(Ponto p){
     return p;
 }
 
+char *pontoGetId(Ponto p){
+    return "PONTO";
+}
+
 void freePonto(Ponto p){
     free(p);
 }

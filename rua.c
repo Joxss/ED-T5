@@ -3,20 +3,35 @@
 typedef struct{
     char nome[100];
     char cepLadoDireito[50];
+    Quadra quadraDireita;
     char cepLadoEsquerdo[50];
+    Quadra quadraEsquerda;
     double distancia;
     double velocidadeMedia;
     double tempo;
 }rua;
 
-Rua createRua(char nome[], char cepLadoDireito[], char cepLadoEsquerdo[], double distancia, double velocidadeMedia){
+Rua createRua(char nome[], Quadra quadraDireita, Quadra quadraEsquerda, double distancia, double velocidadeMedia){
     rua *r = malloc(sizeof(rua));
     strcpy(r->nome,nome);
-    strcpy(r->cepLadoDireito,cepLadoDireito);
-    strcpy(r->cepLadoEsquerdo,cepLadoEsquerdo);
+
+    r->quadraDireita = quadraDireita;
+    r->quadraEsquerda = quadraEsquerda;
+
     r->distancia = distancia;
     r->velocidadeMedia = velocidadeMedia;
     r->tempo = distancia/velocidadeMedia;
+
+    if(quadraDireita != NULL)
+        strcpy(r->cepLadoDireito,quadraGetCep(quadraDireita));
+    else
+        strcpy(r->cepLadoDireito,"#");
+    if(quadraEsquerda != NULL)
+        strcpy(r->cepLadoEsquerdo,quadraGetCep(quadraEsquerda));
+    else
+        strcpy(r->cepLadoEsquerdo,"#");
+    
+    return r;
 }
 
 char *ruaGetNome(Rua r){

@@ -9,8 +9,9 @@ typedef void* Vertice;
 typedef void* Aresta;
 
 Grafo createGrafo(int qtdVertices);
-void grafoInsereVertice(Grafo g, char *id, void *info);
-void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info, double dist, double velocidade);
+Vertice grafoInsereVertice(Grafo g, char *id, void *info);
+void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info);
+char* verticeGetId(Vertice v);
 int grafoExisteAresta(Grafo g, char *v1, char *v2);
 void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*));
 void freeGrafo(Grafo g, void(*freeVerticeData)(void*), void(*freeArestaData)(void*));
