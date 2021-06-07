@@ -84,6 +84,11 @@ List quadraGetMoradores(Quadra q);
 *  Retorno: Uma string contendo a cor da sombra ou NULO caso nao exista cor */
 char *quadraGetCorSombra(Quadra q);
 
+/* Inicializa um novo ponto com as coordenadas xy da face e num da quadra. O ponteiro retornado deve ter sua memória desaloca pela função freePonto.
+*  Parâmetros: Recebe ponteiro não nulo para a quadra, um caracter representando a face(S,N,L,O) e um inteiro representando o numero.
+*  Retorno: Retorna um ponteiro para um ponto com as coordenadas */
+Ponto quadraGetEndereco(Quadra q, char face, int num);
+
 /* Insere um morador da lista de moradores da quadra.
 *  Parâmetros: Recebe ponteiro não nulo para a quadra e o Generic do morador a ser inserido.
 *  Retorno: Não possui retorno */

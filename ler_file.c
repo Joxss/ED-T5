@@ -232,6 +232,15 @@ void _setRegistrador(Ponto registradores[], char string[], Ponto coord){
     }
 }
 
+void _freeRegistradores(Ponto registradores[]){
+    for(int i=0; i<11; i++){
+        if(registradores[i] != NULL){
+            printf("Registrador R%d: %lf %lf\n",i,pontoGetX(registradores[i]),pontoGetY(registradores[i]));
+            freePonto(registradores[i]);
+        }
+    }
+}
+
 void leQry( QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdescricao, Htable cpfXcep, Htable cepXquadra, Diretorios dir){
     
     
@@ -397,8 +406,33 @@ void leQry( QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdesc
             Ponto copia = createPoint(pontoGetX(p),pontoGetY(p));
             _setRegistrador(registradores,registrador,copia);
         }
+        else if(!strcmp(comando,"@e?")){
+            fscanf(qry,"%s %s %c %d",registrador,id,&face,&n);
+            Quadra quadra = hashGetKey(cepXquadra,id);
+            if(quadra == NULL) continue;
+            Ponto p = quadraGetEndereco(quadra,face,n);
+            _setRegistrador(registradores,registrador,p);
+        }
+        else if(!strcmp(comando,"@g?")){
+            fscanf(qry,"%s %s",registrador,id);
+            QuadNode nodeEquipamento = QtGetById(trees[4],id);
+            if(nodeEquipamento == NULL) nodeEquipamento = QtGetById(trees[5],id);
+            if(nodeEquipamento == NULL) nodeEquipamento = QtGetById(trees[6],id);
+            if(nodeEquipamento == NULL) nodeEquipamento = QtGetById(trees[7],id);
+            if(nodeEquipamento == NULL) continue;
+            Ponto p = genericGetPonto(QtGetInfo(NULL,nodeEquipamento));
+            Ponto copia = createPoint(pontoGetX(p),pontoGetY(p));
+            _setRegistrador(registradores,registrador,copia);
+        }
+        else if(!strcmp(comando,"@xy")){
+            fscanf(qry,"%s %lf %lf",registrador,&x,&y);
+            Ponto p = createPoint(x,y);
+            _setRegistrador(registradores,registrador,p);
+        }
     }
     
+    _freeRegistradores(registradores);
+
     fclose(txt);
     fclose(qry);
 }

@@ -79,6 +79,26 @@ char *quadraGetCorSombra(Quadra q){
     return quadra->corSombra;
 }
 
+Ponto quadraGetEndereco(Quadra q, char face, int num){
+    quadra_tad *quadra = (quadra_tad*)q;
+    double x, y;
+    if(face == 'S'){
+        x = rectGetX(quadra->retangulo) + num;
+        y = rectGetY(quadra->retangulo);
+    }else if(face == 'N'){
+        x = rectGetX(quadra->retangulo) + num;
+        y = rectGetY(quadra->retangulo) + rectGetH(quadra->retangulo);
+    }else if(face == 'L'){
+        x = rectGetX(quadra->retangulo);
+        y = rectGetY(quadra->retangulo) + num;
+    }else if(face == 'O'){
+        x = rectGetX(quadra->retangulo); + rectGetW(quadra->retangulo);
+        y = rectGetY(quadra->retangulo) + num;
+    }
+
+    return createPoint(x,y);
+}
+
 // SETTERS
 void quadraInserirMorador(Quadra q, Generic morador){
     quadra_tad *quadra = (quadra_tad*) q;
