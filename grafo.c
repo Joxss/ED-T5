@@ -291,7 +291,79 @@ double* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)) {
     return distancia;
 }
 
+int printMST(int pai[], double pesos[], int n){
+    printf("Edge \tWeight\n");
+    for (int i = 0; i < n; i++)
+        printf("%d - %d \t%lf \n", pai[i], i, pesos[i]);
+}
 
+Grafo _converteGrafo(grafo* graph, int pai[], double pesos[]){
+    grafo *mst = createGrafo(graph->qtdAtual);
+    for(int i=0;i<graph->qtdAtual; i++){
+        grafoInsereVertice(mst,graph->vertices[i]->id,graph->vertices[i]->data);
+    }
+    char *id1, *id2;
+    for(int i=1; i<graph->qtdAtual; i++){
+        int indexFim = i;
+        int indexInicio = pai[i];
+        aresta* a = _getAresta(graph,graph->vertices[indexInicio]->id,graph->vertices[indexFim]->id); // ID1 -> ID2  incio = ID1 - fim = ID2
+        listInsert(mst->vertices[indexInicio]->adjacentes,a);
+        
+        a = _getAresta(graph,graph->vertices[indexFim]->id,graph->vertices[indexInicio]->id); // ID2 -> ID1  incio = ID2 - fim = ID1
+        listInsert(mst->vertices[indexFim]->adjacentes,a);
+    }
+    return mst;
+}
+
+Grafo primMST(Grafo g, double(*getPeso)(void*)){
+    grafo *graph = (grafo*)g;
+    int V = graph->qtdAtual;
+    int parent[V];
+    double key[V];
+    int mstSet[V];
+    Node nodeEdge;
+    aresta *edge;
+
+    for (int i = 0; i < V; i++)
+        key[i] = INT_MAX, mstSet[i] = 1;
+
+    key[0] = 0;
+    parent[0] = -1;
+    printf("checkpoint\n");
+    for (int count = 0; count < V - 1; count++)
+    {
+        int u = menorDistancia(graph, mstSet, key);
+        printf("checkpoint %d\n", u);
+        mstSet[u] = 0;
+
+        nodeEdge = listGetFirst(graph->vertices[u]->adjacentes);
+        while (nodeEdge)
+        {
+            edge = nodeGetData(nodeEdge);
+            if (mstSet[edge->fim->index] == 1 && getPeso(edge->data) < key[edge->fim->index])
+            {
+                parent[edge->fim->index] = u;
+                key[edge->fim->index] = getPeso(edge->data);
+            }
+            nodeEdge = nodeGetNext(nodeEdge);
+        }
+        printf("checkpoint 3\n");
+    }
+
+    //printMST(parent,key,V);
+    return _converteGrafo(graph,parent,key);
+}
+
+void freeMST(Grafo mst){
+    grafo *graf = (grafo*)mst;
+    freeHashTable(graf->indices,free);
+    for(int i=0;i<graf->qtdAtual;i++){
+        freeLista2(graf->vertices[i]->adjacentes);
+        free(graf->vertices[i]);
+    }
+    free(graf->vertices);
+    free(graf);
+}
 
 
 

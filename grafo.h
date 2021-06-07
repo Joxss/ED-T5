@@ -9,16 +9,33 @@ typedef void* Vertice;
 typedef void* Aresta;
 
 Grafo createGrafo(int qtdVertices);
+
 Vertice grafoInsereVertice(Grafo g, char *id, void *info);
+
 void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info);
+
 char* verticeGetId(Vertice v);
+
 int grafoExisteAresta(Grafo g, char *v1, char *v2);
+
 void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*));
+
 void freeGrafo(Grafo g, void(*freeVerticeData)(void*), void(*freeArestaData)(void*));
+
 void printGrafo(Grafo g);
 
 void getIndexes(Grafo g);
 
 double* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*));
+
+/* Obtem a árvore geradora minima de um grafo não direcionado. O Grafo retornado DEVE ter sua memória desalocada utlizando a função freeMST
+*  Parâmetros: Recebe um ponteiro não nulo para o grafo, e um ponteiro para a função que obtem o peso das arestas.
+*  Retorno: Retorna um grafo não orientado contendo apenas as arestas que fazem parte da arvore geradora minima */
+Grafo primMST(Grafo g, double(*getPeso)(void*));
+
+/* Desaloca a memória de um grafo não orientado gerado pelo função primMST.
+*  Parâmetros: Recebe um ponteiro não nulo para o grafo não orientado.
+*  Retorno: Não possui retorno. */
+void freeMST(Grafo mst);
 
 #endif
