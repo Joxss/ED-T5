@@ -241,7 +241,7 @@ void _freeRegistradores(Ponto registradores[]){
     }
 }
 
-void leQry( QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdescricao, Htable cpfXcep, Htable cepXquadra, Diretorios dir){
+void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdescricao, Htable cpfXcep, Htable cepXquadra, Diretorios dir){
     
     
     int id1, id2;
@@ -251,6 +251,7 @@ void leQry( QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdesc
     char id[50], opcional[20];
     char comando[10];
     char cpf[15], cnpj[17], compl[50];
+    char sufix[100];
     char face;
 
     Ponto registradores[11];
@@ -398,6 +399,7 @@ void leQry( QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdesc
             qryCatac(txt, trees[3], trees[4], trees[5], trees[6], trees[10], trees[11], qryFigures, x, y, r);
 
         }
+        //************ T5 ************//
         else if(!strcmp(comando,"@m?")){
             fscanf(qry,"%s %s",registrador,cpf);
             QuadNode nodeMorador = QtGetById(trees[10],cpf);
@@ -428,6 +430,12 @@ void leQry( QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdesc
             fscanf(qry,"%s %lf %lf",registrador,&x,&y);
             Ponto p = createPoint(x,y);
             _setRegistrador(registradores,registrador,p);
+        }
+        else if(!strcmp(comando,"ccv")){
+            fscanf(qry,"%s",sufix);
+            char *pathSufix = getPathSufix(dir,sufix);
+            qryCCV(trees,ruas, pathSufix);
+            free(pathSufix);
         }
     }
     

@@ -150,10 +150,10 @@ void svgPrintText(FILE *svg, Text text, int boolean){
     }
 }
 
-void svgPrintPonto(FILE *svg, Ponto p){
+void svgPrintPonto(FILE *svg, Ponto p, double raio, char cor[]){
     double x = pontoGetX(p);
     double y = pontoGetY(p);
-    fprintf(svg,"<circle id=\"posto-saude\" r=\"5\" cx=\"%lf\" cy=\"%lf\" fill=\"black\" fill-opacity=\"1\"/>\n",x,y);
+    fprintf(svg,"<circle id=\"posto-saude\" r=\"%lf\" cx=\"%lf\" cy=\"%lf\" fill=\"%s\" fill-opacity=\"1\"/>\n",raio,x,y,cor);
 }
 
 void svgPrintCv(FILE *svg, Quad q){
@@ -223,7 +223,7 @@ void svgSelectTag(Generic elemento, void *file){
     }else if(!strcmp(tipo,"qround")){
         svgPrintQuadra(svg,genericGetValores(elemento),1);
     }else if(!strcmp(tipo,"ponto")){
-        svgPrintPonto(svg,genericGetValores(elemento));
+        svgPrintPonto(svg,genericGetValores(elemento),5.0,"black");
     }else if(!strcmp(tipo,"cv")){
         svgPrintCv(svg,genericGetValores(elemento));
     }else if(!strcmp(tipo, "poligono")){
@@ -328,9 +328,6 @@ void svgPrintTreeState(QuadTree tree, char *path){
 
     QuadNode root = QtGetRoot(tree);
     svgOpenTag(path);
-    
-    
-
     FILE *svg = fopen(path,"a");
     // fprintf(svg,"<text text-anchor=\"middle\" x=\"-10\" y=\"-45\" stroke=\"black\" fill=\"black\" font-size=\"8px\">SE</text>\n");
     fprintf(svg,"<line x1=\"-40\" y1=\"-10\" x2=\"20\" y2=\"-10\" stroke=\"black\"/>\n");
@@ -351,4 +348,90 @@ void svgPrintTreeState(QuadTree tree, char *path){
     fclose(svg);
 
     svgCloseTag(path);
+}
+
+int _getOrientacao(Ponto inicio, Ponto fim){
+    double x1 = pontoGetX(inicio), y1 = pontoGetY(inicio);
+    double x2 = pontoGetX(fim), y2 = pontoGetY(fim);
+
+    if(x1 == x2 && y1 > y2){ // PRA CIMA
+        return 1;
+    }else if(x1 == x2 && y2 > y1){ // PRA BAIXO
+        return 2;
+    }else if(x1 > x2 && y1 == y2){ // PRA ESQUERDA
+        return 3;
+    }else if(x2 > x1 && y1 == y2){ // PRA DIREITA
+        return 4;
+    }
+    return 5;
+}
+
+void _printAresta(FILE *svg, Ponto inicio, Ponto fim, char cor[]){
+    double x1 = pontoGetX(inicio), y1 = pontoGetY(inicio);
+    double x2 = pontoGetX(fim), y2 = pontoGetY(fim);
+    int orientacao = _getOrientacao(inicio,fim);
+    if(orientacao == 1){
+        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1+1.25,y1,x2+1.25,y2,cor);
+        double dist = abs(y1-y2);
+        double dY = dist/2;
+        double pontoMedioY = y2+dY;
+        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",x1+1.25,pontoMedioY-1,x1+1.25-1,pontoMedioY+1,x1+1.25+1,pontoMedioY+1,cor);
+    }
+    else if (orientacao == 2){
+        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1-1.25,y1,x2-1.25,y2,cor);
+        // x1p = x1-1.25(point radius);     y1p = |y2-y1|/2 + y1 + 1
+        // x2p = x1 -1 -1.25(point radius); y2p = |y2-y1|/2 - y2 - 1
+        // x3p = x1 +1 -1.25(point radius); y3p = 
+        double dist = abs(y2-y1);
+        double dY = dist/2;
+        double pontoMedioY = y1+dY;
+        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",x1-1.25,pontoMedioY+1,x1-1.25-1,pontoMedioY-1,x1-1.25+1,pontoMedioY-1,cor); 
+    }
+    else if(orientacao == 3){
+        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1-1.25,x2,y2-1.25,cor);
+        double dist = abs(x2-x1);
+        double dX = dist/2;
+        double pontoMedioX = x2+dX;
+        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",pontoMedioX-1,y1-1.25,pontoMedioX+1,y1-1.25-1,pontoMedioX+1,y1-1.25+1,cor); 
+    }
+    else if (orientacao == 4){
+        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1+1.25,x2,y2+1.25,cor);
+        double dist = abs(x2-x1);
+        double dX = dist/2;
+        double pontoMedioX = x1+dX;
+        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",pontoMedioX+1,y1+1.25,pontoMedioX-1,y1+1.25-1,pontoMedioX-1,y1+1.25+1,cor); 
+    }
+    else{
+        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1,x2,y2,cor);
+    }
+}
+
+void svgPrintGrafo(FILE *svg, Grafo grafo, int ehDirecionado){
+    int qtdVertices = grafoGetQtdVertices(grafo);
+    Vertice *vertices = grafoGetVertices(grafo);
+
+    for(int i=0; i<qtdVertices; i++){
+        List arestas = grafoVerticeGetAdjacencias(vertices[i]);
+        Ponto inicio = grafoVerticeGetData(vertices[i]);
+        Node aux = listGetFirst(arestas);
+        while(aux){
+            Aresta aresta = nodeGetData(aux);
+            Vertice destino = grafoArestaGetDestino(aresta);
+            Ponto fim = grafoVerticeGetData(destino);
+            
+            if(ehDirecionado)
+                _printAresta(svg,inicio,fim,"red");
+            else
+                _printAresta(svg,inicio,fim,"black");
+
+            aux = nodeGetNext(aux);
+        }
+    }
+    
+    for(int i = 0; i<qtdVertices; i++){
+        //printa o grafo com um raio de 10px
+        Ponto ponto = grafoVerticeGetData(vertices[i]);
+        svgPrintPonto(svg, ponto, 2.5,"#333333");
+    }
+    
 }

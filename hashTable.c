@@ -46,7 +46,6 @@ int hashKeyExist(Htable ht, char *key){
 
 void *hashGetKey(Htable ht, char *key){
     hTable *hashTable = (hTable*)ht;
-
     int index = hash(key,hashTable->nIndex);
     List lista = hashTable->indexes[index];
     Node node = listGetById(lista,key,chaveXvalorGetChave);

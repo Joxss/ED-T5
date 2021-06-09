@@ -15,6 +15,7 @@
 #include "pessoa.h"
 #include "morador.h"
 #include "estabelecimento.h"
+#include "grafo.h"
 
 /* Executa a qry pnt - Modifica as cores de um determinado círculo retângulo ou texto.
 *  Parâmetros: Recebe um ponteiro não nulo para o arquivo txt, um ponteiro não nulo para as quadtrees que armazenam circulos retângulos e textos, 
@@ -144,5 +145,9 @@ void qryEplg(FILE *txt, QuadTree estabelecimentos, Htable tipoXdescricao, Htable
               um ponteiro nao nulo para a lista de elemento criados por qrys e 3 doubles representando os valores x y e r da circunferencia
 * Retorno: Não possui retorno*/
 void qryCatac(FILE *txt, QuadTree quadras, QuadTree hidrantes, QuadTree semaforos, QuadTree radios, QuadTree moradores, QuadTree estabelecimentos, List qryFigures, double x, double y, double r);
+
+
+// ------------------- T5 ------------------------//
+void qryCCV(QuadTree trees[], Grafo ruas, char path[]);
 
 #endif

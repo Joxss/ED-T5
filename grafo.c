@@ -1,5 +1,4 @@
 #include "grafo.h"
-#include "list.h"
 #include "hashTable.h"
 
 #define INT_MAX 999999999
@@ -25,6 +24,31 @@ typedef struct{
 int _getIndex(grafo *graph, char *id){
     int *index = hashGetKey(graph->indices, id);
     return *index;
+}
+
+int grafoGetQtdVertices(Grafo g){
+    grafo *graph = (grafo*)g;
+    return graph->qtdAtual;
+}
+
+Vertice* grafoGetVertices(Grafo g){
+    grafo *graph = (grafo*)g;
+    return (Vertice*)graph->vertices;
+}
+
+List grafoVerticeGetAdjacencias(Vertice v){
+    vertice *vertex = (vertice*)v;
+    return vertex->adjacentes;
+}
+
+void* grafoVerticeGetData(Vertice v){
+    vertice *vertex = (vertice*)v;
+    return vertex->data;
+}
+
+Vertice grafoArestaGetDestino(Aresta a){
+    aresta *edge = (aresta*) a;
+    return edge->fim;
 }
 
 void getIndexes(Grafo g){
@@ -133,9 +157,16 @@ void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*)
 
 void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info){
     grafo *graf = (grafo*)g;
+
+    int *indexInicio = hashGetKey(graf->indices,v1);
+    int *indexFim = hashGetKey(graf->indices,v2);
+    if(indexInicio == NULL || indexFim == NULL){
+        printf("Vertinice nao existente\n");
+        return;
+    }
+
     aresta *edge = _criaAresta(graf,v1,v2,info);
     
-    int *indexInicio = hashGetKey(graf->indices,v1);
     vertice *inicio = graf->vertices[*indexInicio];
 
     listInsert(inicio->adjacentes,edge);
@@ -298,19 +329,28 @@ int printMST(int pai[], double pesos[], int n){
 }
 
 Grafo _converteGrafo(grafo* graph, int pai[], double pesos[]){
-    grafo *mst = createGrafo(graph->qtdAtual);
+    grafo *mst = createGrafo(graph->max);
     for(int i=0;i<graph->qtdAtual; i++){
         grafoInsereVertice(mst,graph->vertices[i]->id,graph->vertices[i]->data);
     }
     char *id1, *id2;
     for(int i=1; i<graph->qtdAtual; i++){
-        int indexFim = i;
-        int indexInicio = pai[i];
-        aresta* a = _getAresta(graph,graph->vertices[indexInicio]->id,graph->vertices[indexFim]->id); // ID1 -> ID2  incio = ID1 - fim = ID2
-        listInsert(mst->vertices[indexInicio]->adjacentes,a);
+        if(pai[i] == -1){
+            printf("pai %d\n", pai[i]);
+            continue;
+        }
+        int indexFim = i, indexInicio = pai[i];
+
+        id1 = graph->vertices[indexInicio]->id;
+        id2 = graph->vertices[indexFim]->id;
+
+        aresta* a = _getAresta(graph,id1,id2); // ID1 -> ID2  incio = ID1 - fim = ID2
+
+        aresta* a1 = _criaAresta(mst,id1,id2,a->data);
+        listInsert(mst->vertices[indexInicio]->adjacentes,a1);
         
-        a = _getAresta(graph,graph->vertices[indexFim]->id,graph->vertices[indexInicio]->id); // ID2 -> ID1  incio = ID2 - fim = ID1
-        listInsert(mst->vertices[indexFim]->adjacentes,a);
+        aresta* a2 = _criaAresta(mst,id2,id1,a->data);
+        listInsert(mst->vertices[indexFim]->adjacentes,a2);
     }
     return mst;
 }
@@ -325,15 +365,13 @@ Grafo primMST(Grafo g, double(*getPeso)(void*)){
     aresta *edge;
 
     for (int i = 0; i < V; i++)
-        key[i] = INT_MAX, mstSet[i] = 1;
+        key[i] = INT_MAX, mstSet[i] = 1, parent[i] = -1;
 
     key[0] = 0;
-    parent[0] = -1;
-    printf("checkpoint\n");
+    // parent[0] = -1;
     for (int count = 0; count < V - 1; count++)
     {
         int u = menorDistancia(graph, mstSet, key);
-        printf("checkpoint %d\n", u);
         mstSet[u] = 0;
 
         nodeEdge = listGetFirst(graph->vertices[u]->adjacentes);
@@ -347,7 +385,6 @@ Grafo primMST(Grafo g, double(*getPeso)(void*)){
             }
             nodeEdge = nodeGetNext(nodeEdge);
         }
-        printf("checkpoint 3\n");
     }
 
     //printMST(parent,key,V);
@@ -358,13 +395,44 @@ void freeMST(Grafo mst){
     grafo *graf = (grafo*)mst;
     freeHashTable(graf->indices,free);
     for(int i=0;i<graf->qtdAtual;i++){
-        freeLista2(graf->vertices[i]->adjacentes);
+        freeLista(graf->vertices[i]->adjacentes,free);
         free(graf->vertices[i]);
     }
     free(graf->vertices);
     free(graf);
 }
 
+//nao exerce mutação no grafo g
+Grafo grafoCopiaParaNaoDirecionado(Grafo original){
+    grafo* graph = (grafo*) original;
+
+    grafo *copia = createGrafo(graph->max);
+    for(int i=0;i<graph->qtdAtual; i++){
+        grafoInsereVertice(copia,graph->vertices[i]->id,graph->vertices[i]->data);
+    }
+    
+    char id1[100], id2[100];
+    for(int i=0; i<graph->qtdAtual; i++){
+        strcpy(id1,copia->vertices[i]->id);
+        List arestas = graph->vertices[i]->adjacentes;
+        Node aux = listGetFirst(arestas);
+        aresta *edge;
+        while(aux){
+            edge = nodeGetData(aux);
+            strcpy(id2,edge->fim->id);
+            if(_getAresta(copia,id1,id2) == NULL){
+                aresta *a1 = _criaAresta(copia,id1,id2,edge->data);
+                listInsert(copia->vertices[i]->adjacentes,a1);
+            }
+            if(_getAresta(copia,id2,id1) == NULL){
+                aresta *a2 = _criaAresta(copia,id2,id1,edge->data);
+                listInsert(copia->vertices[edge->fim->index]->adjacentes, a2);
+            }
+            aux = nodeGetNext(aux);
+        }
+    }
+    return copia;
+}
 
 
 //

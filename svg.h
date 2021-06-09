@@ -8,6 +8,7 @@
 #include "calculos.h"
 #include "list.h"
 #include "QuadTree.h"
+#include "grafo.h"
 
 /* Abre a tag svg em um arquivo.
 *  Parâmetros: Recebe uma string representando o diretório do arquivo.
@@ -33,5 +34,7 @@ void svgSelectTag(Generic elemento, void *file);
 *  Parâmetros: Recebe ponteiro não nulo a arvore e uma string contendo o caminho mais o nome do arquivo svg a ser gerado.
 *  Retorno: Não possui retorno.*/ 
 void svgPrintTreeState(QuadTree tree, char *path);
+
+void svgPrintGrafo(FILE *svg, Grafo grafo, int ehDirecionado);
 
 #endif

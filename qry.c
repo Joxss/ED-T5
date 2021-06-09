@@ -5,6 +5,7 @@
 #include "hashTable.h"
 #include "svg.h"
 #include <time.h>
+#include "rua.h"
 
 //************ T1 ************//
 void qryPnt(FILE *txt, QuadTree circulos, QuadTree retangulos, QuadTree textos, int id, char corBorda[], char corPreench[]){
@@ -871,4 +872,34 @@ void qryCatac(FILE *txt, QuadTree quadras, QuadTree hidrantes, QuadTree semaforo
     freeLista2(moradoresInside);
     freeLista2(estabelecimentosInside);
 }
+
+//************ T5 ************//
+
+void qryCCV(QuadTree trees[], Grafo ruas, char path[]){
+    FILE *svg = fopen(path,"w");
+    Grafo ciclovias = grafoCopiaParaNaoDirecionado(ruas);
+    Grafo agm = primMST(ciclovias,ruaGetDistancia);
+    fprintf(svg,"<svg>\n");
+
+    QtPercorreProfundidade(trees[0],svgSelectTag,(void*)svg);
+    QtPercorreProfundidade(trees[1],svgSelectTag,(void*)svg);
+    QtPercorreProfundidade(trees[2],svgSelectTag,(void*)svg);
+    QtPercorreProfundidade(trees[3],svgSelectTag,(void*)svg);
+    QtPercorreProfundidade(trees[4],svgSelectTag,(void*)svg);
+    QtPercorreProfundidade(trees[5],svgSelectTag,(void*)svg);
+    QtPercorreProfundidade(trees[6],svgSelectTag,(void*)svg);
+    QtPercorreProfundidade(trees[7],svgSelectTag,(void*)svg);
+
+    svgPrintGrafo(svg,ruas,0);
+    // svgPrintGrafo(svg,ciclovias,0);
+    // svgPrintGrafo(svg,agm,1);
+    fprintf(svg,"</svg>\n");
+
+    freeMST(ciclovias);
+    freeMST(agm);
+    fclose(svg);
+}
+
+
+
 

@@ -24,12 +24,12 @@
 void leGeo(QuadTree *trees, Htable cepXQuadra,char input[]);
 
 /* Lê todas as linhas de um arquivo .qry e executa as funções respectivas de cada qry.
-*  Parâmetros: Recebe um vetor de quadtrees contendo ponteiros nao nulos para as quadtrees: circulos, retangulos, textos, quadras, hidrantes, semaforos, radios, postos, regioes, 
+*  Parâmetros: Recebe um ponteiro para o grafo das ruas, um vetor de quadtrees contendo ponteiros nao nulos para as quadtrees: circulos, retangulos, textos, quadras, hidrantes, semaforos, radios, postos, regioes, 
                um ponteiro nao nulo para a lista de elemento criados por qrys, 
                e ponteiros nao nulos para as hash tables cpfXpessoa, tipoXdescricao, cpfXcep, cepXquadra, 
                Recebe tambem um ponteiro nao nulo para os diretorios dos arquivos de entrada e saida.
 *  Retorno: Não possui retorno. */
-void leQry(QuadTree *trees, List qryFigures, Htable cpfXpessoa, Htable tipoXdescricao, Htable cpfXcep, Htable cepXquadra, Diretorios dir);
+void leQry(Grafo ruas, QuadTree *trees, List qryFigures, Htable cpfXpessoa, Htable tipoXdescricao, Htable cpfXcep, Htable cepXquadra, Diretorios dir);
 
 /* Lê todas as linhas de um arquivo .ec e armazena cada elemento em sua respectiva quadtree.
 *  Parâmetros: Recebe ponteiros não nulos para as quadtrees de quadras e estabelecimentos, um ponteiro nao nulo para a hash table tipoXdescricao dos estabelecimentos. 

@@ -3,15 +3,29 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "list.h"
 typedef void* Grafo;
 typedef void* Vertice;
 typedef void* Aresta;
 
 Grafo createGrafo(int qtdVertices);
 
-Vertice grafoInsereVertice(Grafo g, char *id, void *info);
+// Retorna um array de vertices
+Vertice* grafoGetVertices(Grafo g);
 
+// Retorna a lista de adjacencia de um vertice v
+List grafoVerticeGetAdjacencias(Vertice v);
+
+// Retorna a quantiade de vertices de um grafo g 
+int grafoGetQtdVertices(Grafo g);
+
+// Retorna um void pointer representando a data armazenada no vertice v
+void* grafoVerticeGetData(Vertice v);
+
+// Retorna o vertice de destino da aresta edge
+Vertice grafoArestaGetDestino(Aresta a);
+
+Vertice grafoInsereVertice(Grafo g, char *id, void *info);
 void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info);
 
 char* verticeGetId(Vertice v);
@@ -37,5 +51,7 @@ Grafo primMST(Grafo g, double(*getPeso)(void*));
 *  Parâmetros: Recebe um ponteiro não nulo para o grafo não orientado.
 *  Retorno: Não possui retorno. */
 void freeMST(Grafo mst);
+
+Grafo grafoCopiaParaNaoDirecionado(Grafo original);
 
 #endif
