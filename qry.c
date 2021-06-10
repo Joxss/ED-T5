@@ -891,8 +891,8 @@ void qryCCV(QuadTree trees[], Grafo ruas, char path[]){
     QtPercorreProfundidade(trees[7],svgSelectTag,(void*)svg);
 
     svgPrintGrafo(svg,ruas,0);
-    // svgPrintGrafo(svg,ciclovias,0);
-    // svgPrintGrafo(svg,agm,1);
+    //svgPrintGrafo(svg,ciclovias,0);
+    //svgPrintGrafo(svg,agm,1);
     fprintf(svg,"</svg>\n");
 
     freeMST(ciclovias);

@@ -1,6 +1,14 @@
 #include "svg.h"
 #include "estabelecimento.h"
 
+double _maior(double n1, double n2){
+    return n1>n2 ? n1 : n2;
+}
+
+double _menor(double n1, double n2){
+    return n1<n2 ? n1 : n2;
+}
+
 void _svgPrintFilter(FILE *svg, char *shadowColor, char *filterId){
     fprintf(svg, "<filter id=\"%s\">\n",filterId);
     fprintf(svg, "<feOffset dx=\"5\" dy=\"5\" result=\"offsetblur\"/>\n");
@@ -371,35 +379,27 @@ void _printAresta(FILE *svg, Ponto inicio, Ponto fim, char cor[]){
     double x2 = pontoGetX(fim), y2 = pontoGetY(fim);
     int orientacao = _getOrientacao(inicio,fim);
     if(orientacao == 1){
-        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1+1.25,y1,x2+1.25,y2,cor);
-        double dist = abs(y1-y2);
-        double dY = dist/2;
-        double pontoMedioY = y2+dY;
-        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",x1+1.25,pontoMedioY-1,x1+1.25-1,pontoMedioY+1,x1+1.25+1,pontoMedioY+1,cor);
+        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1,x2,y2,cor);
+        double menor = _menor(y1,y2);
+        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",x1,menor+1.5,x1-2,menor+2+1.5,x1+2,menor+2+1.5,cor);
     }
     else if (orientacao == 2){
-        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1-1.25,y1,x2-1.25,y2,cor);
+        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1,x2,y2,cor);
         // x1p = x1-1.25(point radius);     y1p = |y2-y1|/2 + y1 + 1
         // x2p = x1 -1 -1.25(point radius); y2p = |y2-y1|/2 - y2 - 1
         // x3p = x1 +1 -1.25(point radius); y3p = 
-        double dist = abs(y2-y1);
-        double dY = dist/2;
-        double pontoMedioY = y1+dY;
-        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",x1-1.25,pontoMedioY+1,x1-1.25-1,pontoMedioY-1,x1-1.25+1,pontoMedioY-1,cor); 
+        double maior = _maior(y1,y2);
+        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",x1,maior-1.5,x1-2,maior-2-1.5,x1+2,maior-2-1.5,cor); 
     }
     else if(orientacao == 3){
-        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1-1.25,x2,y2-1.25,cor);
-        double dist = abs(x2-x1);
-        double dX = dist/2;
-        double pontoMedioX = x2+dX;
-        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",pontoMedioX-1,y1-1.25,pontoMedioX+1,y1-1.25-1,pontoMedioX+1,y1-1.25+1,cor); 
+        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1,x2,y2,cor);
+        double menor = _menor(x1,x2);
+        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",menor+1.5,y1,menor+1.5+2,y1-2,menor+1.5+2,y1+2,cor); 
     }
     else if (orientacao == 4){
-        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1+1.25,x2,y2+1.25,cor);
-        double dist = abs(x2-x1);
-        double dX = dist/2;
-        double pontoMedioX = x1+dX;
-        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",pontoMedioX+1,y1+1.25,pontoMedioX-1,y1+1.25-1,pontoMedioX-1,y1+1.25+1,cor); 
+        fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1,x2,y2,cor);
+        double maior = _maior(x1,x2);
+        fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",maior-1.5,y1,maior-1.5-2,y1-2,maior-1.5-2,y1+2,cor); 
     }
     else{
         fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1,x2,y2,cor);

@@ -336,7 +336,6 @@ Grafo _converteGrafo(grafo* graph, int pai[], double pesos[]){
     char *id1, *id2;
     for(int i=1; i<graph->qtdAtual; i++){
         if(pai[i] == -1){
-            printf("pai %d\n", pai[i]);
             continue;
         }
         int indexFim = i, indexInicio = pai[i];
