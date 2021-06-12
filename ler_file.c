@@ -232,6 +232,32 @@ void _setRegistrador(Ponto registradores[], char string[], Ponto coord){
     }
 }
 
+Ponto _getRegistrador(Ponto registradores[], char string[]){
+    if(!strcmp(string,"R0")){
+        return registradores[0];
+    }else if(!strcmp(string,"R1")){
+        return registradores[1];
+    }else if(!strcmp(string,"R2")){
+        return registradores[2];
+    }else if(!strcmp(string,"R3")){
+        return registradores[3];
+    }else if(!strcmp(string,"R4")){
+        return registradores[4];
+    }else if(!strcmp(string,"R5")){
+        return registradores[5];
+    }else if(!strcmp(string,"R6")){
+        return registradores[6];
+    }else if(!strcmp(string,"R7")){
+        return registradores[7];
+    }else if(!strcmp(string,"R8")){
+        return registradores[8];
+    }else if(!strcmp(string,"R9")){
+        return registradores[9];
+    }else if(!strcmp(string,"R10")){
+        return registradores[10];
+    }
+}
+
 void _freeRegistradores(Ponto registradores[]){
     for(int i=0; i<11; i++){
         if(registradores[i] != NULL){
@@ -250,12 +276,16 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
     char corBorda[20], corPreench[20];
     char id[50], opcional[20];
     char comando[10];
+    
     char cpf[15], cnpj[17], compl[50];
     char sufix[100];
     char face;
 
     Ponto registradores[11];
-    char registrador[10];
+    char registrador[10], regOrigem[10], regDestino[10];
+
+    char sufixoAnterior[100];
+    strcpy(sufixoAnterior,"#");
      
     for(int i=0;i<11;i++)
         registradores[i] = NULL;
@@ -437,8 +467,35 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             qryCCV(trees,ruas, pathSufix);
             free(pathSufix);
         }
+        else if(!strcmp(comando,"p?")){
+            fscanf(qry, "%s %s %s %s %s", sufix, regOrigem, regDestino, corBorda, corPreench);
+            if(!strcmp(sufix,"-")){
+                printf("USAR SUFIXO ANTERIOR: %s\n",sufixoAnterior);
+                strcpy(sufix,sufixoAnterior);
+            }else{
+                if(strcmp(sufixoAnterior,"#") != 0){
+                    char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
+                    FILE *svg = fopen(pathSufixAnterior, "a");
+                    fprintf(svg,"</svg>");
+                    fclose(svg);
+                    free(pathSufixAnterior);
+                }
+                strcpy(sufixoAnterior,sufix);
+            }
+            char *pathSufix = getPathSufix(dir,sufix);
+            Ponto p1 = _getRegistrador(registradores,regOrigem);
+            Ponto p2 = _getRegistrador(registradores,regDestino);
+            qryP(trees, ruas,p1,p2, corBorda, corPreench, pathSufix, "balbal.txt");
+            free(pathSufix);
+        }
     }
-    
+
+    char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
+    FILE *svg = fopen(sufixoAnterior, "a");
+    fprintf(svg,"</svg>");
+    fclose(svg);
+    free(pathSufixAnterior);
+
     _freeRegistradores(registradores);
 
     fclose(txt);

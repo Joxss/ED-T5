@@ -1,5 +1,6 @@
 #include "grafo.h"
 #include "hashTable.h"
+#include "math.h"
 
 #define INT_MAX 999999999
 typedef struct{
@@ -268,32 +269,11 @@ int menorDistancia(grafo* grafo, int* aberto, double* distancia) {
     return menor;
 }
 
-void printaCaminho(grafo *graph, int *pai, int i){
-    if(pai[i] == -1)
-        return;
-    printaCaminho(graph,pai,pai[i]);
-    int index = pai[i];
-    printf("%s -> ",graph->vertices[index]->id);
-}
-
-void printaCaminhos(grafo *graph, int *pai, int raiz){
-
-    for(int i=0; i<graph->qtdAtual; i++){
-        printf("Caminho de %s para %s:  ",graph->vertices[raiz]->id,graph->vertices[i]->id);
-        if(pai[i]==-1)
-            printf("Nao ha caminho disponivel\n");
-        else{
-            printaCaminho(graph,pai,i);
-            printf("%s\n",graph->vertices[i]->id);
-        }
-    }
-}
-
-double* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)) {
+int* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)) {
     grafo *graph = (grafo*)g;
     int noInicial = _getIndex(graph,idRaiz);
     double* distancia = (double*) malloc(graph->qtdAtual*sizeof(double));
-    int pai[graph->qtdAtual];
+    int* pai = malloc(sizeof(int) * graph->qtdAtual);
     int menor;
     int aberto[graph->qtdAtual];
     Node nodeEdge;
@@ -317,9 +297,9 @@ double* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)) {
         }
     }
 
-    printaCaminhos(graph,pai,noInicial);
+    free(distancia);
 
-    return distancia;
+    return pai;
 }
 
 int printMST(int pai[], double pesos[], int n){
@@ -431,6 +411,61 @@ Grafo grafoCopiaParaNaoDirecionado(Grafo original){
         }
     }
     return copia;
+}
+
+void montaCaminho(List caminho, grafo *graph, int *pai, int destino){
+    if(pai[destino] == -1)
+        return;
+    montaCaminho(caminho,graph,pai,pai[destino]);
+    // printf("%s -> ",graph->vertices[index]->id);
+    listInsert(caminho,graph->vertices[destino]);
+}
+
+List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*), char *txt){
+    vertice *vInicio = (vertice*)inicio;
+    vertice *vFim = (vertice*)fim;
+    int *caminhos = dijkstra(g,vInicio->id,getPeso);
+    grafo *graph = (grafo*)g;
+
+    int index1 = vInicio->index;
+    int index2 = vFim->index;
+
+    if(caminhos[index2] == -1){
+        free(caminhos);
+        return NULL;
+    }
+
+    List caminho = createLista();
+    listInsert(caminho,graph->vertices[index1]);
+    montaCaminho(caminho,graph,caminhos,index2);
+
+    free(caminhos);
+    // printa txt
+
+    return caminho;
+}
+
+Vertice grafoVerticeMaisProximo(Ponto ponto, Grafo g){
+    grafo *graph = (grafo*)g;
+    double menorDistancia = 9999999999.0;
+    int indexMenor = -1;
+
+    for(int i=0; i<graph->qtdAtual; i++){
+        double dX = pontoGetX(ponto) - pontoGetX(graph->vertices[i]->data);
+        dX = dX*dX;
+        double dY = pontoGetY(ponto) - pontoGetY(graph->vertices[i]->data);
+        dY = dY*dY;
+        double dist = sqrt(dX+dY);
+        if(dist < menorDistancia){
+            menorDistancia = dist;
+            indexMenor = i;
+        }
+    }
+
+    if(indexMenor < 0) return NULL;
+
+    vertice* v = graph->vertices[indexMenor];
+    return v;
 }
 
 

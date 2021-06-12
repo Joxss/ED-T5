@@ -40,7 +40,7 @@ void printGrafo(Grafo g);
 
 void getIndexes(Grafo g);
 
-double* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*));
+int* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*));
 
 /* Obtem a árvore geradora minima de um grafo não direcionado. O Grafo retornado DEVE ter sua memória desalocada utlizando a função freeMST
 *  Parâmetros: Recebe um ponteiro não nulo para o grafo, e um ponteiro para a função que obtem o peso das arestas.
@@ -53,5 +53,9 @@ Grafo primMST(Grafo g, double(*getPeso)(void*));
 void freeMST(Grafo mst);
 
 Grafo grafoCopiaParaNaoDirecionado(Grafo original);
+
+List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*), char *txt);
+
+Vertice grafoVerticeMaisProximo(Ponto ponto, Grafo g);
 
 #endif

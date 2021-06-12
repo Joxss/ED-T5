@@ -337,4 +337,6 @@ int checkPoligInsideRect(Poligono polig, Quad rect){
     return (xMin >= xRect && xMax <= xRect+wRect && yMin >= yRect && yMax <= yRect+hRect);
 }
 
+
+
 //

@@ -150,4 +150,6 @@ void qryCatac(FILE *txt, QuadTree quadras, QuadTree hidrantes, QuadTree semaforo
 // ------------------- T5 ------------------------//
 void qryCCV(QuadTree trees[], Grafo ruas, char path[]);
 
+void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], char pathTxt[]);
+
 #endif

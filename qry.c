@@ -900,6 +900,48 @@ void qryCCV(QuadTree trees[], Grafo ruas, char path[]){
     fclose(svg);
 }
 
+void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], char pathTxt[]){
+    Vertice vInicio = grafoVerticeMaisProximo(inicio,ruas);
+    Vertice vFim = grafoVerticeMaisProximo(destino,ruas);
+    Ponto pInicio = grafoVerticeGetData(vInicio);
+    Ponto pFim = grafoVerticeGetData(vFim);
+
+    List caminhoMaisCurto = melhorCaminho(ruas,vInicio,vFim,ruaGetDistancia,"xablau");
+    List caminhoMaisRapido = melhorCaminho(ruas,vInicio,vFim,ruaGetTempo,"xablau");
+
+    if(caminhoMaisCurto == NULL || caminhoMaisRapido == NULL) return;
+
+    FILE *svg = fopen(pathSvg,"a");
+
+    //verifica se o arquivo esta vazio
+    if (svg != NULL) {
+        fseek (svg, 0, SEEK_END);
+        long size = ftell(svg);
+
+        if (size == 0) {
+            fprintf(svg,"<svg>\n");
+            QtPercorreProfundidade(trees[0],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[1],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[2],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[3],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[4],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[5],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[6],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[7],svgSelectTag,(void*)svg);
+
+        }
+    }
+    svgPrintCaminho(svg,caminhoMaisCurto, corCurto, 1);
+    svgPrintCaminho(svg,caminhoMaisRapido, corRapido, 0);
+
+    //svgPrintGrafo(svg,ciclovias,0);
+    //svgPrintGrafo(svg,agm,1);
+    //fprintf(svg,"</svg>\n");
+    fclose(svg);
+    freeLista2(caminhoMaisCurto);
+    freeLista2(caminhoMaisRapido);
+}
+
 
 
 

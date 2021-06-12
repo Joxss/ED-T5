@@ -37,4 +37,6 @@ void svgPrintTreeState(QuadTree tree, char *path);
 
 void svgPrintGrafo(FILE *svg, Grafo grafo, int ehDirecionado);
 
+void svgPrintCaminho(FILE *svg, List caminho, char *cor, int ehMaisCurto);
+
 #endif
