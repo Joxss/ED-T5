@@ -54,7 +54,7 @@ void freeMST(Grafo mst);
 
 Grafo grafoCopiaParaNaoDirecionado(Grafo original);
 
-List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*), char *txt);
+List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*), FILE *txt);
 
 Vertice grafoVerticeMaisProximo(Ponto ponto, Grafo g);
 

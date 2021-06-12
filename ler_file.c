@@ -468,30 +468,31 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             free(pathSufix);
         }
         else if(!strcmp(comando,"p?")){
-            fscanf(qry, "%s %s %s %s %s", sufix, regOrigem, regDestino, corBorda, corPreench);
+            printf("Entrou no p\n");
+            fscanf(qry, "%s %s %s %s %s\n", sufix, regOrigem, regDestino, corBorda, corPreench);
             if(!strcmp(sufix,"-")){
-                printf("USAR SUFIXO ANTERIOR: %s\n",sufixoAnterior);
                 strcpy(sufix,sufixoAnterior);
             }else{
                 if(strcmp(sufixoAnterior,"#") != 0){
+                    printf("FECHANDO A TAG DO SUFIXO DENTRO DO WHILE -- %s\n",sufixoAnterior);
                     char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
                     FILE *svg = fopen(pathSufixAnterior, "a");
                     fprintf(svg,"</svg>");
                     fclose(svg);
                     free(pathSufixAnterior);
                 }
-                strcpy(sufixoAnterior,sufix);
             }
+            strcpy(sufixoAnterior,sufix);
             char *pathSufix = getPathSufix(dir,sufix);
             Ponto p1 = _getRegistrador(registradores,regOrigem);
             Ponto p2 = _getRegistrador(registradores,regDestino);
-            qryP(trees, ruas,p1,p2, corBorda, corPreench, pathSufix, "balbal.txt");
+            qryP(trees, ruas,p1,p2, corBorda, corPreench, pathSufix, txt);
             free(pathSufix);
         }
     }
-
+    printf("FECHANDO A TAG DO SUFIXO FORA DO WHILE -- %s\n",sufixoAnterior);
     char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
-    FILE *svg = fopen(sufixoAnterior, "a");
+    FILE *svg = fopen(pathSufixAnterior, "a");
     fprintf(svg,"</svg>");
     fclose(svg);
     free(pathSufixAnterior);

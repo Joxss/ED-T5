@@ -1,6 +1,7 @@
 #include "grafo.h"
 #include "hashTable.h"
 #include "math.h"
+#include "rua.h"
 
 #define INT_MAX 999999999
 typedef struct{
@@ -421,7 +422,59 @@ void montaCaminho(List caminho, grafo *graph, int *pai, int destino){
     listInsert(caminho,graph->vertices[destino]);
 }
 
-List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*), char *txt){
+char *_getDirecao(Ponto inicio, Ponto fim){
+    double x1 = pontoGetX(inicio), y1 = pontoGetY(inicio);
+    double x2 = pontoGetX(fim), y2 = pontoGetY(fim);
+
+    if(x1 == x2 && y1 > y2){ // PRA CIMA
+        return "Sul";
+    }else if(x1 == x2 && y2 > y1){ // PRA BAIXO
+        return "Norte";
+    }else if(x1 > x2 && y1 == y2){ // PRA ESQUERDA
+        return "Leste";
+    }else if(x2 > x1 && y1 == y2){ // PRA DIREITA
+        return "Oeste";
+    }
+    return "Diagonal";
+}
+
+void _descricaoTextualMelhorCaminho(grafo *graph, List caminho, FILE *txt){
+    int primeiro = 1;
+    Node n2 = listGetFirst(caminho), n1 = n2;
+    n2 = nodeGetNext(n2);
+
+    vertice *v1 = nodeGetData(n1), *v2 = nodeGetData(n2);
+    aresta *rua = _getAresta(graph,v1->id,v2->id);
+    char direcao[10];
+    char direcaoAnterior[10];
+
+    strcpy(direcao,_getDirecao(v1->data,v2->data));
+    strcpy(direcaoAnterior,direcao);
+    
+    fprintf(txt,"Siga na direção %s na rua %s",direcao,ruaGetNome(rua->data));
+    while(n2){
+        n1 = n2;
+        n2 = nodeGetNext(n2);
+        if(n2 == NULL) break;
+        v1 = nodeGetData(n1);
+        v2 = nodeGetData(n2);
+        rua = _getAresta(graph,v1->id,v2->id);
+        
+        strcpy(direcao,_getDirecao(v1->data,v2->data));
+
+        if(strcmp(direcao,direcaoAnterior) != 0){
+            fprintf(txt,", vire na direção %s na rua %s",direcao,ruaGetNome(rua->data));
+        }
+
+        strcpy(direcaoAnterior,direcao);
+        // else{
+        //     fprintf(txt,", continue na direção %s na rua %s ",direcao,ruaGetNome(rua->data));
+        // }
+    }
+    fprintf(txt,"\n");
+}
+
+List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*), FILE *txt){
     vertice *vInicio = (vertice*)inicio;
     vertice *vFim = (vertice*)fim;
     int *caminhos = dijkstra(g,vInicio->id,getPeso);
@@ -441,7 +494,7 @@ List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*)
 
     free(caminhos);
     // printa txt
-
+    _descricaoTextualMelhorCaminho(graph,caminho,txt);
     return caminho;
 }
 

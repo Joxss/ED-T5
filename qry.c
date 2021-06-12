@@ -900,14 +900,16 @@ void qryCCV(QuadTree trees[], Grafo ruas, char path[]){
     fclose(svg);
 }
 
-void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], char pathTxt[]){
+void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], FILE *pathTxt){
     Vertice vInicio = grafoVerticeMaisProximo(inicio,ruas);
     Vertice vFim = grafoVerticeMaisProximo(destino,ruas);
     Ponto pInicio = grafoVerticeGetData(vInicio);
     Ponto pFim = grafoVerticeGetData(vFim);
+    fprintf(pathTxt,"Caminho mais curto: ");
+    List caminhoMaisCurto = melhorCaminho(ruas,vInicio,vFim,ruaGetDistancia,pathTxt);
 
-    List caminhoMaisCurto = melhorCaminho(ruas,vInicio,vFim,ruaGetDistancia,"xablau");
-    List caminhoMaisRapido = melhorCaminho(ruas,vInicio,vFim,ruaGetTempo,"xablau");
+    fprintf(pathTxt,"Caminho mais rapido: ");
+    List caminhoMaisRapido = melhorCaminho(ruas,vInicio,vFim,ruaGetTempo,pathTxt);
 
     if(caminhoMaisCurto == NULL || caminhoMaisRapido == NULL) return;
 
@@ -931,12 +933,14 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
 
         }
     }
+
+    fprintf(svg,"<circle id=\"inicio\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(inicio),pontoGetY(inicio));
+    fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">I</text>\n",pontoGetX(inicio),pontoGetY(inicio));
     svgPrintCaminho(svg,caminhoMaisCurto, corCurto, 1);
     svgPrintCaminho(svg,caminhoMaisRapido, corRapido, 0);
 
-    //svgPrintGrafo(svg,ciclovias,0);
-    //svgPrintGrafo(svg,agm,1);
-    //fprintf(svg,"</svg>\n");
+    fprintf(svg,"<circle id=\"fim\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(destino),pontoGetY(destino));
+    fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">F</text>\n",pontoGetX(destino),pontoGetY(destino));
     fclose(svg);
     freeLista2(caminhoMaisCurto);
     freeLista2(caminhoMaisRapido);

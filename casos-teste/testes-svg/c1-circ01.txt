@@ -1,0 +1,2 @@
+Caminho mais curto: Siga na direção Oeste na rua Yorba_St, vire na direção Norte na rua Zircon_Pl, vire na direção Oeste na rua Palace_Dr, vire na direção Sul na rua Young_Ct
+Caminho mais rapido: Siga na direção Oeste na rua Yorba_St, vire na direção Norte na rua Zircon_Pl, vire na direção Oeste na rua Palace_Dr, vire na direção Sul na rua Young_Ct
