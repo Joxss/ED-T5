@@ -20,6 +20,18 @@ Rua createRua(char nome[], Quadra quadraDireita, Quadra quadraEsquerda, double d
 */
 char *ruaGetNome(Rua r);
 
+/* Obtém a quadra do lado direito de uma rua. O ponteiro retornado não deve ter sua memória desalocada.
+*  Parâmetros: Recebe um ponteiro não nulo para a rua.
+*  Retorno: Retorna um ponteiro para a quadra do lado direito da rua caso existir, caso contrario returna NULL. 
+*/
+Quadra ruaGetQuadraDireita(Rua r);
+
+/* Obtém a quadra do lado esquerdo de uma rua. O ponteiro retornado não deve ter sua memória desalocada.
+*  Parâmetros: Recebe um ponteiro não nulo para a rua.
+*  Retorno: Retorna um ponteiro para a quadra do lado esquerdo da rua caso existir, caso contrario returna NULL. 
+*/
+Quadra ruaGetQuadraEsquerda(Rua r);
+
 /* Obtém o cep da quadra ao lado direito de uma rua.
 *  Parâmetros: Recebe um ponteiro não nulo para a rua.
 *  Retorno: Retorna uma string contendo o o cep da quadra ao lado direito da rua. 

@@ -23,9 +23,46 @@ typedef struct{
     int max, qtdAtual;
 }grafo;
 
+double _min(double a, double b){ // RETORNA O MENOR NUMERO ENTRE DOIS NUMEROS
+    if(a>=b) return b;
+    else return a;
+}
+
+double _max(double a, double b){ // RETORNA O MAIOR NUMERO ENTRE DOIS NUMEROS
+    if(a>b) return a;
+    else return b;
+}
+
 int _getIndex(grafo *graph, char *id){
     int *index = hashGetKey(graph->indices, id);
     return *index;
+}
+
+void _freeAresta(aresta *a , void(*freeArestaData)(void*)){
+    freeArestaData(a->data);
+    free(a);
+}
+
+void _freeVertice(vertice *vertex, void(*freeVerticeData)(void*), void(*freeArestaData)(void*)){
+    while(listLenght(vertex->adjacentes) != 0){
+        aresta *edge = listRemoveFirst(vertex->adjacentes);
+        _freeAresta(edge,freeArestaData);
+    }
+    free(vertex->adjacentes);
+
+    freeVerticeData(vertex->data);
+    free(vertex);
+}
+
+void freeGrafo(Grafo g, void(*freeVerticeData)(void*), void(*freeArestaData)(void*)){
+    grafo *graf = (grafo*)g;
+    freeHashTable(graf->indices,free);
+    for(int i=0; i<graf->qtdAtual; i++){
+        _freeVertice(graf->vertices[i],freeVerticeData,freeArestaData);
+    }
+    free(graf->vertices);
+
+    free(graf);
 }
 
 int grafoGetQtdVertices(Grafo g){
@@ -48,9 +85,61 @@ void* grafoVerticeGetData(Vertice v){
     return vertex->data;
 }
 
+char* grafoVerticeGetId(Vertice v){
+    vertice *vertex = (vertice*)v;
+    return vertex->id;
+}
+
+Vertice grafoArestaGetInicio(Aresta a){
+    aresta *edge = (aresta*) a;
+    return edge->inicio;
+}
+
+Vertice grafoArestaGetFim(Aresta a){
+    aresta *edge = (aresta*) a;
+    return edge->fim;
+}
+
 Vertice grafoArestaGetDestino(Aresta a){
     aresta *edge = (aresta*) a;
     return edge->fim;
+}
+
+void* grafoArestaGetData(Aresta a){
+    aresta *edge = (aresta*) a;
+    return edge->data;
+}
+
+Ponto grafoArestaGetPontoMedio(Aresta a){
+    aresta *edge = (aresta*) a;
+    Ponto pInicio = edge->inicio->data;
+    Ponto pFim = edge->fim->data;
+
+    double menorX = _min(pontoGetX(pInicio),pontoGetX(pFim));
+    double menorY = _min(pontoGetY(pInicio),pontoGetY(pFim));
+    double dx = fabs(pontoGetX(pInicio)-pontoGetX(pFim));
+    double dy = fabs(pontoGetY(pInicio)-pontoGetY(pFim));
+
+    return createPoint(menorX+dx,menorY+dy);
+}
+
+int grafoArestaGetOrientacao(Aresta a){
+    aresta *edge = (aresta*) a;
+    Ponto inicio = edge->inicio->data;
+    Ponto fim = edge->fim->data;
+    double x1 = pontoGetX(inicio), y1 = pontoGetY(inicio);
+    double x2 = pontoGetX(fim), y2 = pontoGetY(fim);
+
+    if(x1 == x2 && y1 > y2){ // PRA CIMA
+        return 1;
+    }else if(x1 == x2 && y2 > y1){ // PRA BAIXO
+        return 2;
+    }else if(x1 > x2 && y1 == y2){ // PRA ESQUERDA
+        return 3;
+    }else if(x2 > x1 && y1 == y2){ // PRA DIREITA
+        return 4;
+    }
+    return 5;
 }
 
 void getIndexes(Grafo g){
@@ -138,6 +227,7 @@ int grafoExisteAresta(Grafo g, char *v1, char *v2){
 }
 
 void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*)){
+    // printf("Entrou na remove aresta %s ---- %s\n",v1,v2);
     grafo *graf = (grafo*)g;
     int indexV1 = _getIndex(graf,v1);
     List arestas = graf->vertices[indexV1]->adjacentes;
@@ -145,13 +235,14 @@ void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*)
     aresta *edge;
     while(aux){
         edge = nodeGetData(aux);
-        if(strcmp(edge->fim->id,v2) == 0)
+        if(strcmp(edge->fim->id,v2) == 0){
             break;
-
+        }
         aux = nodeGetNext(aux);
     }
-    if(!aux){
-        freeArestaData(listRemoveNode(arestas,aux));
+    
+    if(aux){
+        _freeAresta(listRemoveNode(arestas,aux),freeArestaData);
         printf("Removeu\n");
     }
     return;
@@ -172,33 +263,6 @@ void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info){
     vertice *inicio = graf->vertices[*indexInicio];
 
     listInsert(inicio->adjacentes,edge);
-}
-
-void _freeAresta(aresta *a , void(*freeArestaData)(void*)){
-    freeArestaData(a->data);
-    free(a);
-}
-
-void _freeVertice(vertice *vertex, void(*freeVerticeData)(void*), void(*freeArestaData)(void*)){
-    while(listLenght(vertex->adjacentes) != 0){
-        aresta *edge = listRemoveFirst(vertex->adjacentes);
-        _freeAresta(edge,freeArestaData);
-    }
-    free(vertex->adjacentes);
-
-    freeVerticeData(vertex->data);
-    free(vertex);
-}
-
-void freeGrafo(Grafo g, void(*freeVerticeData)(void*), void(*freeArestaData)(void*)){
-    grafo *graf = (grafo*)g;
-    freeHashTable(graf->indices,free);
-    for(int i=0; i<graf->qtdAtual; i++){
-        _freeVertice(graf->vertices[i],freeVerticeData,freeArestaData);
-    }
-    free(graf->vertices);
-
-    free(graf);
 }
 
 void printGrafo(Grafo g){

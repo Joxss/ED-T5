@@ -416,7 +416,7 @@ void svgPrintGrafo(FILE *svg, Grafo grafo, int ehDirecionado){
         Node aux = listGetFirst(arestas);
         while(aux){
             Aresta aresta = nodeGetData(aux);
-            Vertice destino = grafoArestaGetDestino(aresta);
+            Vertice destino = grafoArestaGetFim(aresta);
             Ponto fim = grafoVerticeGetData(destino);
             
             if(ehDirecionado)

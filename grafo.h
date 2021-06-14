@@ -22,8 +22,20 @@ int grafoGetQtdVertices(Grafo g);
 // Retorna um void pointer representando a data armazenada no vertice v
 void* grafoVerticeGetData(Vertice v);
 
+char* grafoVerticeGetId(Vertice v);
+
+Vertice grafoArestaGetInicio(Aresta a);
+
 // Retorna o vertice de destino da aresta edge
-Vertice grafoArestaGetDestino(Aresta a);
+Vertice grafoArestaGetFim(Aresta a);
+
+void* grafoArestaGetData(Aresta a);
+
+// o ponto retornado precisa ser desalocado!
+Ponto grafoArestaGetPontoMedio(Aresta a);
+
+// 1 = SUL 2 = NORTE 3 = LESTE 4 = OESTE
+int grafoArestaGetOrientacao(Aresta a);
 
 Vertice grafoInsereVertice(Grafo g, char *id, void *info);
 void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info);
@@ -57,5 +69,6 @@ Grafo grafoCopiaParaNaoDirecionado(Grafo original);
 List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*), FILE *txt);
 
 Vertice grafoVerticeMaisProximo(Ponto ponto, Grafo g);
+
 
 #endif

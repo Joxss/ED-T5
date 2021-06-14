@@ -432,6 +432,7 @@ void qryCv(QuadTree casosCv, Htable cepXquadra, int n, char id[], char face, dou
     Quadra quadra = hashGetKey(cepXquadra,id);
     
     //calcula os valores para o quadrado que contem o numero de casos de covid na quadra
+    quadraAddCasos(quadra, face, n);
     setCv(&x, &y, &w, &h, n,quadra,face,num);
     Quad q = createQuad(x,y,w,h,n);
     quadSetFace(q,face);
@@ -856,14 +857,12 @@ void qryCatac(FILE *txt, QuadTree quadras, QuadTree hidrantes, QuadTree semaforo
     List moradoresInside = QtNosDentroCirculo(moradores,x,y,r);
     List estabelecimentosInside = QtNosDentroCirculo(estabelecimentos,x,y,r);
 
-
     _qryCatac(txt,quadras,quadrasInside);
     _qryCatac(txt,hidrantes,hidrantesInside);
     _qryCatac(txt,semaforos,semaforosInside);
     _qryCatac(txt,radios,radiosInside);
     _qryCatac(txt,moradores,moradoresInside);
     _qryCatac(txt,estabelecimentos,estabelecimentosInside);
-
 
     freeLista2(quadrasInside);
     freeLista2(hidrantesInside);
@@ -890,9 +889,9 @@ void qryCCV(QuadTree trees[], Grafo ruas, char path[]){
     QtPercorreProfundidade(trees[6],svgSelectTag,(void*)svg);
     QtPercorreProfundidade(trees[7],svgSelectTag,(void*)svg);
 
-    svgPrintGrafo(svg,ruas,0);
-    //svgPrintGrafo(svg,ciclovias,0);
-    //svgPrintGrafo(svg,agm,1);
+    //svgPrintGrafo(svg,ruas,0);
+    svgPrintGrafo(svg,ciclovias,0);
+    svgPrintGrafo(svg,agm,1);
     fprintf(svg,"</svg>\n");
 
     freeMST(ciclovias);
@@ -946,6 +945,148 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
     freeLista2(caminhoMaisRapido);
 }
 
+void qryPb(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char pathSvg[], FILE *pathTxt){
+    Grafo ciclovias = grafoCopiaParaNaoDirecionado(ruas);
+    Grafo agm = primMST(ciclovias,ruaGetDistancia);
+
+    Vertice vInicio = grafoVerticeMaisProximo(inicio,agm);
+    Vertice vFim = grafoVerticeMaisProximo(destino,agm);
+    Ponto pInicio = grafoVerticeGetData(vInicio);
+    Ponto pFim = grafoVerticeGetData(vFim);
+    fprintf(pathTxt,"Caminho mais curto: ");
+    List caminhoMaisCurto = melhorCaminho(agm,vInicio,vFim,ruaGetDistancia,pathTxt);
+
+    if(caminhoMaisCurto == NULL) return;
+
+    FILE *svg = fopen(pathSvg,"a");
+
+    //verifica se o arquivo esta vazio
+    if (svg != NULL) {
+        fseek (svg, 0, SEEK_END);
+        long size = ftell(svg);
+
+        if (size == 0) {
+            fprintf(svg,"<svg>\n");
+            QtPercorreProfundidade(trees[0],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[1],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[2],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[3],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[4],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[5],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[6],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[7],svgSelectTag,(void*)svg);
+
+        }
+    }
+
+    fprintf(svg,"<circle id=\"inicio\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(inicio),pontoGetY(inicio));
+    fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">I</text>\n",pontoGetX(inicio),pontoGetY(inicio));
+    svgPrintCaminho(svg,caminhoMaisCurto, corCurto, 1);
+
+    fprintf(svg,"<circle id=\"fim\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(destino),pontoGetY(destino));
+    fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">F</text>\n",pontoGetX(destino),pontoGetY(destino));
+    fclose(svg);
+    freeLista2(caminhoMaisCurto);
+    freeMST(ciclovias);
+    freeMST(agm);
+}
+
+void _qryBf(Grafo ruas, List qryFigures, FILE *txt, Aresta aresta, Quadra quadra, char face, int qtd){
+    Vertice origem = grafoArestaGetInicio(aresta);
+    Vertice destino = grafoArestaGetFim(aresta);
+    double x = quadraGetX(quadra), y = quadraGetY(quadra), w = quadraGetW(quadra), h = quadraGetH(quadra);
+    Line line;
+    Generic generic;
+
+    // Cria a linha que indica qual a face da quadra que passou do limite
+    if(face == 'S'){
+        line = createLine(x,y-3,x+w,y-3,"1px","red");
+        generic = createGeneric("linha",line,freeLine,NULL);
+        listInsert(qryFigures,generic);
+    }else if(face == 'N'){
+        line = createLine(x,y+h+3,x+w,y+h+3,"1px","red");
+        generic = createGeneric("linha",line,freeLine,NULL);
+        listInsert(qryFigures,generic);
+
+    }else if(face =='L'){
+        line = createLine(x-3,y,x-3,y+h,"1px","red");
+        generic = createGeneric("linha",line,freeLine,NULL);
+        listInsert(qryFigures,generic);
+
+    }else if(face == 'O'){
+        line = createLine(x+w+3,y,x+w+3,y+h,"1px","red");
+        generic = createGeneric("linha",line,freeLine,NULL);
+        listInsert(qryFigures,generic);
+    }
+
+    grafoRemoveAresta(ruas,grafoVerticeGetId(origem),grafoVerticeGetId(destino),freeRua);
+
+}
+
+void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt){
+    int qtdVertices = grafoGetQtdVertices(ruas);
+    Vertice *vertices = grafoGetVertices(ruas);
+
+    Quadra quadraDireita, quadraEsquerda;
+    List arestas;
+    Node aux;
+    Aresta aresta;
+    Rua rua;
+    int orientacao;
+    int casosLadoDireito, casosLadoEsquerdo;
+    
+    for(int i=0; i<qtdVertices; i++){
+        arestas =  grafoVerticeGetAdjacencias(vertices[i]);
+        aux = listGetFirst(arestas);
+
+        while(aux){
+            aresta = nodeGetData(aux);
+            rua = grafoArestaGetData(aresta);
+            orientacao = grafoArestaGetOrientacao(aresta);
+
+            quadraDireita = ruaGetQuadraDireita(rua);
+            quadraEsquerda = ruaGetQuadraEsquerda(rua);
+            casosLadoDireito = 0;
+            casosLadoEsquerdo = 0;
+
+            aux = nodeGetNext(aux);
+
+            if(orientacao == 1){ // sul
+                if(quadraDireita != NULL) casosLadoDireito = quadraGetCasos(quadraDireita, 'L');
+
+                if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'O');
+
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'L',casosLadoDireito);
+                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'O',casosLadoEsquerdo);
+
+            }else if(orientacao == 2){ // norte
+                if(quadraDireita != NULL) casosLadoDireito = quadraGetCasos(quadraDireita, 'O');
+
+                if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'L');
+                
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'O',casosLadoDireito);
+                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'L',casosLadoEsquerdo);
+
+            }else if(orientacao == 3){ // leste
+                if(quadraDireita != NULL) casosLadoDireito = quadraGetCasos(quadraDireita, 'N');
+                
+                if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'S');
+
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'N',casosLadoDireito);
+                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'S',casosLadoEsquerdo);
+
+            }else if(orientacao == 4){ // oeste
+                if(quadraDireita != NULL) casosLadoDireito = quadraGetCasos(quadraDireita, 'S');
+
+                if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'N');
+
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'S',casosLadoDireito);
+                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'N',casosLadoEsquerdo);
+
+            }
+        }
+    }
+}
 
 
 

@@ -19,6 +19,16 @@ typedef void *Quadra;
 *  Retorno: Retorna um ponteiro para a quadra criado. */
 Quadra createQuadra(char id[], double x, double y, double w, double h, char borda[], char corBorda[], char corPreench[]);
 
+/* Adiciona n casos de covid a face de uma quadra.
+*  Parâmetros: Recebe um ponteiro não nulo para a quadra, um char (N,S,L,O), e um int.
+*  Retorno: Não possui retorno. */
+void quadraAddCasos(Quadra q, char face, int n);
+
+/* Retorna os n casos de covid da face de uma quadra.
+*  Parâmetros: Recebe um ponteiro não nulo para a quadra, um char (N,S,L,O) informando a face.
+*  Retorno: Retorna um inteiro contendo a quantidade de casos na face da quadra. */
+int quadraGetCasos(Quadra q, char face);
+
 /* Obtem o cep de uma quadra.
 *  Parâmetros: Recebe um ponteiro não nulo para a quadra.
 *  Retorno: Retorna uma string contendo o cep da quadra. */

@@ -488,15 +488,43 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             Ponto p2 = _getRegistrador(registradores,regDestino);
             qryP(trees, ruas,p1,p2, corBorda, corPreench, pathSufix, txt);
             free(pathSufix);
+        }else if(!strcmp(comando,"pb?")){
+            printf("Entrou no p\n");
+            fscanf(qry, "%s %s %s %s\n", sufix, regOrigem, regDestino, corPreench);
+            if(!strcmp(sufix,"-")){
+                strcpy(sufix,sufixoAnterior);
+            }else{
+                if(strcmp(sufixoAnterior,"#") != 0){
+                    printf("FECHANDO A TAG DO SUFIXO DENTRO DO WHILE -- %s\n",sufixoAnterior);
+                    char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
+                    FILE *svg = fopen(pathSufixAnterior, "a");
+                    fprintf(svg,"</svg>");
+                    fclose(svg);
+                    free(pathSufixAnterior);
+                }
+            }
+            strcpy(sufixoAnterior,sufix);
+            char *pathSufix = getPathSufix(dir,sufix);
+            Ponto p1 = _getRegistrador(registradores,regOrigem);
+            Ponto p2 = _getRegistrador(registradores,regDestino);
+            qryPb(trees, ruas, p1, p2, corPreench, pathSufix, txt);
+            free(pathSufix);
+        
+        }else if(!strcmp(comando,"bf")){
+            fscanf(qry, "%d\n", &n);
+
+            qryBf(ruas, n, qryFigures, txt);
         }
     }
-    printf("FECHANDO A TAG DO SUFIXO FORA DO WHILE -- %s\n",sufixoAnterior);
-    char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
-    FILE *svg = fopen(pathSufixAnterior, "a");
-    fprintf(svg,"</svg>");
-    fclose(svg);
-    free(pathSufixAnterior);
+    // printf("FECHANDO A TAG DO SUFIXO FORA DO WHILE -- %s\n",sufixoAnterior);
 
+    if(strcmp(sufixoAnterior, "#") != 0){
+        char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
+        FILE *svg = fopen(pathSufixAnterior, "a");
+        fprintf(svg,"</svg>");
+        fclose(svg);
+        free(pathSufixAnterior);
+    }
     _freeRegistradores(registradores);
 
     fclose(txt);

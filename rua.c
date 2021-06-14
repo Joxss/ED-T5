@@ -39,6 +39,16 @@ char *ruaGetNome(Rua r){
     return street->nome;
 }
 
+Quadra ruaGetQuadraDireita(Rua r){
+    rua *street = (rua*)r;
+    return street->quadraDireita;
+}
+
+Quadra ruaGetQuadraEsquerda(Rua r){
+    rua *street = (rua*)r;
+    return street->quadraEsquerda;
+}
+
 char *ruaGetCepDireito(Rua r){
     rua *street = (rua*)r;
     return street->cepLadoDireito;

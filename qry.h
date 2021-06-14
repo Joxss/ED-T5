@@ -152,4 +152,8 @@ void qryCCV(QuadTree trees[], Grafo ruas, char path[]);
 
 void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], FILE *pathTxt);
 
+void qryPb(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char pathSvg[], FILE *pathTxt);
+
+void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt);
+
 #endif

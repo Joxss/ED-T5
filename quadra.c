@@ -4,14 +4,64 @@ typedef struct{
     Rect retangulo;
     List moradores;
     char *corSombra;
+    int casosSul, casosNorte, casosLeste, casosOeste;
 }quadra_tad;
 
 Quadra createQuadra(char id[], double x, double y, double w, double h, char borda[], char corBorda[], char corPreench[]){
     quadra_tad *quadra = (quadra_tad*)malloc(sizeof(quadra_tad));
     quadra->retangulo = createRect(id,x,y,w,h,borda,corBorda,corPreench);
     quadra->moradores = createLista();
+    quadra->casosSul = 0;
+    quadra->casosNorte = 0;
+    quadra->casosLeste = 0;
+    quadra->casosOeste = 0;
     quadra->corSombra = NULL;
     return quadra;
+}
+
+void quadraAddCasos(Quadra q, char face, int n){
+    quadra_tad *quadra = (quadra_tad*) q;
+    switch(face){
+        case 'S':{
+            quadra->casosSul+=n;
+            break;
+        }
+        case 'N':{
+            quadra->casosNorte+=n;
+            break;
+        }
+        case 'L':{
+            quadra->casosLeste+=n;
+            break;
+        }
+        case 'O':{
+            quadra->casosOeste+=n;
+            break;
+        }
+    }
+
+}
+
+int quadraGetCasos(Quadra q, char face){
+    quadra_tad *quadra = (quadra_tad*)q;
+    switch(face){
+        case 'S':{
+            return quadra->casosSul;
+            break;
+        }
+        case 'N':{
+            return quadra->casosNorte;
+            break;
+        }
+        case 'L':{
+            return quadra->casosLeste;
+            break;
+        }
+        case 'O':{
+            return quadra->casosOeste;
+            break;
+        }
+    }
 }
 
 char *quadraGetCep(Quadra q){
