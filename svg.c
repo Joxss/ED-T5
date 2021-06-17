@@ -1,6 +1,9 @@
 #include "svg.h"
 #include "estabelecimento.h"
 
+
+int contadorDeCaminhos = 0;
+
 double _maior(double n1, double n2){
     return n1>n2 ? n1 : n2;
 }
@@ -21,16 +24,21 @@ void _svgPrintFilter(FILE *svg, char *shadowColor, char *filterId){
     fprintf(svg, "</filter>\n");
 }
 
-void svgOpenTag(char path[]){
-    FILE *svg = fopen(path,"w");
-    fprintf(svg,"<svg>\n");
-    fprintf(svg,"<defs>\n");
+void svgPrintFilter(FILE *svg){
     _svgPrintFilter(svg,"#FFFF00","shadow1");
     _svgPrintFilter(svg,"#FF9955","shadow2");
     _svgPrintFilter(svg,"#FF0000","shadow3");
     _svgPrintFilter(svg,"#FF00CC","shadow4");
     _svgPrintFilter(svg,"#6600ff","shadow5");
     _svgPrintFilter(svg,"#A02C5A","shadow6");
+    return;
+}
+
+void svgOpenTag(char path[]){
+    FILE *svg = fopen(path,"w");
+    fprintf(svg,"<svg>\n");
+    fprintf(svg,"<defs>\n");
+    svgPrintFilter(svg);
     fprintf(svg,"</defs>\n");
     fclose(svg);
 }
@@ -488,6 +496,43 @@ void svgPrintCaminho(FILE *svg, List caminho, char *cor, int ehMaisCurto){
 
         _printCaminho(svg,inicio,fim, cor, ehMaisCurto);
     }
+}
+
+void svgPrintCaminho2(FILE *svg, List caminho, char *cor, int ehMaisCurto){
+    Node node = listGetFirst(caminho);
+    Ponto ponto = grafoVerticeGetData(nodeGetData(node));
+    double x = pontoGetX(ponto), y = pontoGetY(ponto);
+        if(ehMaisCurto){    
+            x+=1.5;
+            y+=1.5;
+        }else{
+            x-=1.5;
+            y-=1.5;
+        }
+    
+    fprintf(svg,"<path style=\"stroke:%s;stroke-width:1px;fill-opacity:0\" d=\"M %lf,%lf",cor,x,y);
+
+    while(node){
+        ponto = grafoVerticeGetData(nodeGetData(node));
+        x = pontoGetX(ponto), y = pontoGetY(ponto);
+        if(ehMaisCurto){    
+            x+=1.5;
+            y+=1.5;
+        }else{
+            x-=1.5;
+            y-=1.5;
+        }
+        fprintf(svg," L %lf,%lf",x,y);
+        node = nodeGetNext(node);
+    }
+    fprintf(svg,"\" id=\"id%d\"/>\n",contadorDeCaminhos);
+
+    fprintf(svg,"<rect x=\"\" y=\"\" width=\"15\" height=\"15\" fill=\"red\">\n");
+    fprintf(svg,"<animateMotion dur=\"60s\" repeatCount=\"indefinite\">\n");
+    fprintf(svg,"<mpath xlink:href=\"#id%d\"/>\n",contadorDeCaminhos);
+    fprintf(svg,"</animateMotion>\n");
+    fprintf(svg,"</rect>\n");
+    contadorDeCaminhos++;
 }
 
 

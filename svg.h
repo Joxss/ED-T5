@@ -15,6 +15,8 @@
 *  Retorno: Não possui retorno. */
 void svgOpenTag(char file[]);
 
+void svgPrintFilter(FILE *svg);
+
 /* Fecha a tag svg em um arquivo.
 *  Parâmetros: Recebe uma string representando o diretório do arquivo.
 *  Retorno: Não possui retorno. */
@@ -38,5 +40,7 @@ void svgPrintTreeState(QuadTree tree, char *path);
 void svgPrintGrafo(FILE *svg, Grafo grafo, int ehDirecionado);
 
 void svgPrintCaminho(FILE *svg, List caminho, char *cor, int ehMaisCurto);
+
+void svgPrintCaminho2(FILE *svg, List caminho, char *cor, int ehMaisCurto);
 
 #endif

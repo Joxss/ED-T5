@@ -915,7 +915,10 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
     if(caminhoMaisRapido == NULL){
         printf("caminhomaisrapido nulo\n");
     }
-    if(caminhoMaisCurto == NULL || caminhoMaisRapido == NULL) return;
+    if(caminhoMaisCurto == NULL || caminhoMaisRapido == NULL){
+        printf("dois caminhos nulos");
+        return;
+    }
 
     FILE *svg = fopen(pathSvg,"a");
 
@@ -925,7 +928,9 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
         long size = ftell(svg);
 
         if (size == 0) {
-            fprintf(svg,"<svg>\n");
+            fprintf(svg,"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
+            fprintf(svg,"<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n");
+            svgPrintFilter(svg);
             QtPercorreProfundidade(trees[0],svgSelectTag,(void*)svg);
             QtPercorreProfundidade(trees[1],svgSelectTag,(void*)svg);
             QtPercorreProfundidade(trees[2],svgSelectTag,(void*)svg);
@@ -940,8 +945,8 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
 
     fprintf(svg,"<circle id=\"inicio\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(inicio),pontoGetY(inicio));
     fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">I</text>\n",pontoGetX(inicio),pontoGetY(inicio));
-    svgPrintCaminho(svg,caminhoMaisCurto, corCurto, 1);
-    svgPrintCaminho(svg,caminhoMaisRapido, corRapido, 0);
+    svgPrintCaminho2(svg,caminhoMaisCurto, corCurto, 1);
+    svgPrintCaminho2(svg,caminhoMaisRapido, corRapido, 0);
 
     fprintf(svg,"<circle id=\"fim\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(destino),pontoGetY(destino));
     fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">F</text>\n",pontoGetX(destino),pontoGetY(destino));
@@ -996,9 +1001,7 @@ void qryPb(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCu
     freeMST(agm);
 }
 
-void _qryBf(Grafo ruas, List qryFigures, FILE *txt, Aresta aresta, Quadra quadra, char face, int qtd){
-    Vertice origem = grafoArestaGetInicio(aresta);
-    Vertice destino = grafoArestaGetFim(aresta);
+void _qryBf(Grafo ruas, List qryFigures, FILE *txt, Vertice origem, Vertice destino, Quadra quadra, char face, int qtd){
     double x = quadraGetX(quadra), y = quadraGetY(quadra), w = quadraGetW(quadra), h = quadraGetH(quadra);
     Line line;
     Generic generic;
@@ -1035,6 +1038,7 @@ void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt){
     Quadra quadraDireita, quadraEsquerda;
     List arestas;
     Node aux;
+    Vertice v1, v2;
     Aresta aresta;
     Rua rua;
     int orientacao;
@@ -1051,6 +1055,8 @@ void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt){
 
             quadraDireita = ruaGetQuadraDireita(rua);
             quadraEsquerda = ruaGetQuadraEsquerda(rua);
+            v1 = grafoArestaGetInicio(aresta);
+            v2 = grafoArestaGetFim(aresta);
             casosLadoDireito = 0;
             casosLadoEsquerdo = 0;
 
@@ -1061,32 +1067,32 @@ void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt){
 
                 if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'O');
 
-                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'L',casosLadoDireito);
-                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'O',casosLadoEsquerdo);
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraDireita,'L',casosLadoDireito);
+                if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraEsquerda,'O',casosLadoEsquerdo);
 
             }else if(orientacao == 2){ // norte
                 if(quadraDireita != NULL) casosLadoDireito = quadraGetCasos(quadraDireita, 'O');
 
                 if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'L');
                 
-                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'O',casosLadoDireito);
-                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'L',casosLadoEsquerdo);
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraDireita,'O',casosLadoDireito);
+                if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraEsquerda,'L',casosLadoEsquerdo);
 
             }else if(orientacao == 3){ // leste
                 if(quadraDireita != NULL) casosLadoDireito = quadraGetCasos(quadraDireita, 'N');
                 
                 if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'S');
 
-                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'N',casosLadoDireito);
-                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'S',casosLadoEsquerdo);
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraDireita,'N',casosLadoDireito);
+                if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraEsquerda,'S',casosLadoEsquerdo);
 
             }else if(orientacao == 4){ // oeste
                 if(quadraDireita != NULL) casosLadoDireito = quadraGetCasos(quadraDireita, 'S');
 
                 if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'N');
 
-                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'S',casosLadoDireito);
-                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'N',casosLadoEsquerdo);
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraDireita,'S',casosLadoDireito);
+                if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraEsquerda,'N',casosLadoEsquerdo);
 
             }
         }
