@@ -254,6 +254,11 @@ void txtCatacQry(FILE *txt, Generic elemento){
     }        
 }
 
-
+// TXT: listar cep e face referente ao trecho
+// interditado e o número total de casos de
+// coviid naquela face.
+void txtBfQry(FILE *txt,Quadra quadra,char face,int qtd){
+    fprintf(txt,"CEP: %s, FACE: %c, Quantidade de casos: %d\n",quadraGetCep(quadra),face,qtd);
+}
 
 

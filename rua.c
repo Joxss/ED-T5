@@ -22,6 +22,12 @@ Rua createRua(char nome[], Quadra quadraDireita, Quadra quadraEsquerda, double d
     r->velocidadeMedia = velocidadeMedia;
     r->tempo = distancia/velocidadeMedia;
 
+    if(velocidadeMedia <= 0 || distancia <= 0 ){
+        printf("Velocidade media: %lf", velocidadeMedia);
+        printf(" Distancia: %lf", distancia);
+        printf(" Tempo: %lf %s\n", r->tempo, r->nome);
+    }
+
     if(quadraDireita != NULL)
         strcpy(r->cepLadoDireito,quadraGetCep(quadraDireita));
     else

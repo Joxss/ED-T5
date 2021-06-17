@@ -1,0 +1,4 @@
+@g? R1 hseB44-2.4
+@e? R2 B40-1.6 Face.N 50
+ccv ccvperc-smpls-bike-equrb-endr
+pb? perc-smpls-bike-equrb-endr R1 R2 green

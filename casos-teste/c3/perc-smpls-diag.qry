@@ -1,0 +1,3 @@
+@xy R3 1122.000000 392.800000
+@xy R5 12622.500000 4419.000000
+p? perc-smpls-diag R3 R5 darkgray orange

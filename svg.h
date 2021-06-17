@@ -25,6 +25,8 @@ void svgCloseTag(char file[]);
 *  Retorno: Não possui retorno.*/ 
 void svgPrintList(List l, char svg[]);
 
+void svgPrintPoligono(FILE *svg, Poligono p);
+
 /* Verifica o tipo do elemento e seleciona a funcao correta para escreve-lo no svg.
 *  Parâmetros: Recebe ponteiro não nulo para o generic que armazena o elemento e um ponteiro nao nulo para o FILE aberto na forma de um void *.
 *  Retorno: Não possui retorno.*/ 

@@ -440,37 +440,11 @@ void _printCaminho(FILE *svg, Ponto inicio, Ponto fim, char cor[], int ehMaisCur
     double x1 = pontoGetX(inicio), y1 = pontoGetY(inicio);
     double x2 = pontoGetX(fim), y2 = pontoGetY(fim);
     int orientacao = _getOrientacao(inicio,fim);
-    if(orientacao == 1){
-        if(ehMaisCurto)
-            fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1+1.5,y1+1.5,x2+1.5,y2+1.5,cor);
-        else
-            fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1-1.5,y1-1.5,x2-1.5,y2-1.5,cor);
-    }
-    else if (orientacao == 2){
-        if(ehMaisCurto)
-            fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1+1.5,y1+1.5,x2+1.5,y2+1.5,cor);
-        else
-            fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1-1.5,y1-1.5,x2-1.5,y2-1.5,cor);
 
-    }
-    else if(orientacao == 3){
-        if(ehMaisCurto)
+    if(ehMaisCurto)
             fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1+1.5,y1+1.5,x2+1.5,y2+1.5,cor);
         else
             fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1-1.5,y1-1.5,x2-1.5,y2-1.5,cor);
-    }
-    else if (orientacao == 4){
-        if(ehMaisCurto)
-            fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1+1.5,y1+1.5,x2+1.5,y2+1.5,cor);
-        else
-            fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1-1.5,y1-1.5,x2-1.5,y2-1.5,cor);
-    }
-    else{
-        if(ehMaisCurto)
-            fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1+1.5,y1+1.5,x2+1.5,y2+1.5,cor);
-        else
-            fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1-1.5,y1-1.5,x2-1.5,y2-1.5,cor);
-    }
 }
 
 void svgPrintCaminho(FILE *svg, List caminho, char *cor, int ehMaisCurto){

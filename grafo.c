@@ -243,7 +243,6 @@ void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*)
     
     if(aux){
         _freeAresta(listRemoveNode(arestas,aux),freeArestaData);
-        printf("Removeu\n");
     }
     return;
 }
@@ -541,7 +540,7 @@ void _descricaoTextualMelhorCaminho(grafo *graph, List caminho, FILE *txt){
 List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*), FILE *txt){
     vertice *vInicio = (vertice*)inicio;
     vertice *vFim = (vertice*)fim;
-    int *caminhos = dijkstra(g,vInicio->id,getPeso);
+    int *caminhos = dijkstra(g, vInicio->id, getPeso);
     grafo *graph = (grafo*)g;
 
     int index1 = vInicio->index;

@@ -186,6 +186,6 @@ int QtGetLenght(QuadTree tree);
 */
 void QtOrdenarInsercao(QuadTree tree, List lista);
 
-
+List QuadTToList(QuadTree tree);
 
 #endif

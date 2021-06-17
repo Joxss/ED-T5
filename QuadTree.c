@@ -705,3 +705,22 @@ void QtOrdenarInsercao(QuadTree tree, List lista){
 
     free(stack);
 }
+
+void _QuadTreeToList(Qnode *qt, List l){
+    if(qt == NULL) return;
+
+    Generic elemento = qt->elemento;
+    if(elemento != NULL) listInsert(l,elemento);
+
+    _QuadTreeToList(qt->nw,l);
+    _QuadTreeToList(qt->ne,l);
+    _QuadTreeToList(qt->sw,l);
+    _QuadTreeToList(qt->se,l);
+}
+
+List QuadTToList(QuadTree tree){
+    Qtree *qt = (Qtree*)tree;
+    List list = createLista();
+    _QuadTreeToList(qt->root,list);
+    return list;
+}

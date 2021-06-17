@@ -500,6 +500,7 @@ char _incidenciaPoligono(QuadTree postos, Poligono poli, int totalCasos, double 
     }
 }
 
+
 void qryCi(FILE *txt, QuadTree postos, QuadTree casosCv, QuadTree densidades, List qryFigures, double x, double y, double r){
     //cria o circulo do ci
     Circ c = createCircle("raio-ci",x,y,r,"3px","green","white");
@@ -910,7 +911,20 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
     fprintf(pathTxt,"Caminho mais rapido: ");
     List caminhoMaisRapido = melhorCaminho(ruas,vInicio,vFim,ruaGetTempo,pathTxt);
 
-    if(caminhoMaisCurto == NULL || caminhoMaisRapido == NULL) return;
+    if(caminhoMaisCurto == NULL && caminhoMaisRapido == NULL){
+        printf("caminho mais curto e mais rapido nulo\n");
+        return;
+    }
+
+    else if(caminhoMaisCurto == NULL){
+        printf("caminho mais curto nulo\n");
+        return;
+    }
+
+    // else if(caminhoMaisRapido == NULL){
+    //     printf("caminho mais rapido nulo\n");
+    //     return;
+    // }
 
     FILE *svg = fopen(pathSvg,"a");
 
@@ -936,13 +950,13 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
     fprintf(svg,"<circle id=\"inicio\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(inicio),pontoGetY(inicio));
     fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">I</text>\n",pontoGetX(inicio),pontoGetY(inicio));
     svgPrintCaminho(svg,caminhoMaisCurto, corCurto, 1);
-    svgPrintCaminho(svg,caminhoMaisRapido, corRapido, 0);
+    //svgPrintCaminho(svg,caminhoMaisRapido, corRapido, 0);
 
     fprintf(svg,"<circle id=\"fim\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(destino),pontoGetY(destino));
     fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">F</text>\n",pontoGetX(destino),pontoGetY(destino));
     fclose(svg);
     freeLista2(caminhoMaisCurto);
-    freeLista2(caminhoMaisRapido);
+    //freeLista2(caminhoMaisRapido);
 }
 
 void qryPb(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char pathSvg[], FILE *pathTxt){
@@ -1020,7 +1034,10 @@ void _qryBf(Grafo ruas, List qryFigures, FILE *txt, Aresta aresta, Quadra quadra
     }
 
     grafoRemoveAresta(ruas,grafoVerticeGetId(origem),grafoVerticeGetId(destino),freeRua);
-
+    // TXT: listar cep e face referente ao trecho
+    // interditado e o número total de casos de
+    // coviid naquela face.
+    txtBfQry(txt,quadra,face,qtd);
 }
 
 void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt){
@@ -1084,9 +1101,111 @@ void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt){
                 else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'N',casosLadoEsquerdo);
 
             }
+            // else{
+            //     printf("DIAGONAL ## ");
+            //     if(quadraDireita != NULL) printf("DIAGONAL - QUADRA DIREITA EXISTE ## ");
+
+            //     if(quadraEsquerda != NULL) printf("DIAGONAL - QUADRA ESQUERDA EXISTE");
+
+            //     printf("\n");
+            // }
         }
     }
 }
 
+List _pontos(List casosCv){
+    List pontosInside = createLista();
+    Generic g;
+
+    Node node = listGetFirst(casosCv);
+    while(node != NULL){
+        double x, y;
+        g = nodeGetData(node);
+        Quad q = genericGetValores(g);
+        if(quadGetFace(q)=='N'){
+            x = quadGetXc(q);
+            y = quadGetY(q)+quadGetH(q);
+        }else if(quadGetFace(q)=='S'){
+            x = quadGetXc(q);
+            y = quadGetY(q);
+        }else if(quadGetFace(q)=='L'){
+            x = quadGetX(q);
+            y = quadGetYc(q);
+        }else if(quadGetFace(q)=='O'){
+            x = quadGetX(q) + quadGetW(q);
+            y = quadGetYc(q);
+        }
+
+        Ponto ponto = createPoint(x,y);
+        Generic pontoElemento = createGeneric("ponto",ponto,freePonto,pontoGetPonto);
+        listInsert(pontosInside,pontoElemento);
+
+        node = nodeGetNext(node);
+    }
+
+    return pontosInside;
+}
+
+void qrySp(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], FILE *txt){
+    FILE *svg = fopen(pathSvg,"a");
+
+    Generic g;
+    Ponto p;
+
+    //verifica se o arquivo esta vazio
+    if (svg != NULL) {
+        fseek (svg, 0, SEEK_END);
+        long size = ftell(svg);
+
+        if (size == 0) {
+            fprintf(svg,"<svg>\n");
+            QtPercorreProfundidade(trees[0],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[1],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[2],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[3],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[4],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[5],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[6],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[7],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[9],svgSelectTag,(void*)svg);
+
+            List casos = QuadTToList(trees[9]);
+
+            List pontos = _pontos(casos);
+
+            int count = listLenght(pontos);
+            Generic *convex = convexHull(pontos,&count);
+
+            if(convex == NULL){
+                printf("Não foi possivel formar a envoltoria convexa\n");
+                freeLista(pontos,freeGeneric);
+                freeLista2(casos);
+                return;
+            }
+
+            double *xPoli = malloc(sizeof(double)*count);
+            double *yPoli = malloc(sizeof(double)*count);
+
+            for(int i=0;i<count; i++){
+
+                g = convex[i];
+                p = genericGetPonto(g);
+
+                xPoli[i] = pontoGetX(p);
+                yPoli[i] = pontoGetY(p);
+            }
+            Poligono poli = createPoligono(count,xPoli,yPoli);
+            poligSetCor(poli,"purple");
+            svgPrintPoligono(svg,poli);
+            freePolig(poli);
+
+
+            freeLista(pontos,freeGeneric);
+            freeLista2(casos);
+            free(convex);
+        }
+    }
+    fclose(svg);
+}
 
 

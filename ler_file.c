@@ -514,6 +514,28 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             fscanf(qry, "%d\n", &n);
 
             qryBf(ruas, n, qryFigures, txt);
+        }else if(!strcmp(comando,"sp?")){
+            printf("Entrou no sp\n");
+            fscanf(qry, "%s %s %s %s %s\n", sufix, regOrigem, regDestino, corBorda, corPreench);
+            if(!strcmp(sufix,"-")){
+                strcpy(sufix,sufixoAnterior);
+            }else{
+                if(strcmp(sufixoAnterior,"#") != 0){
+                    printf("FECHANDO A TAG DO SUFIXO DENTRO DO WHILE -- %s\n",sufixoAnterior);
+                    char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
+                    FILE *svg = fopen(pathSufixAnterior, "a");
+                    fprintf(svg,"</svg>");
+                    fclose(svg);
+                    free(pathSufixAnterior);
+                }
+                strcpy(sufixoAnterior,sufix);
+            }
+            
+            char *pathSufix = getPathSufix(dir,sufix);
+            Ponto p1 = _getRegistrador(registradores,regOrigem);
+            Ponto p2 = _getRegistrador(registradores,regDestino);
+            qrySp(trees, ruas,p1,p2, corBorda, corPreench, pathSufix, txt);
+            free(pathSufix);
         }
     }
     // printf("FECHANDO A TAG DO SUFIXO FORA DO WHILE -- %s\n",sufixoAnterior);

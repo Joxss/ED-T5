@@ -99,4 +99,6 @@ void txtEplgQry(FILE *txt, Pessoa pessoa, Estabelecimento estabelecimento);
 *  Retorno: Não possui retorno*/
 void txtCatacQry(FILE *txt, Generic elemento);
 
+void txtBfQry(FILE *txt,Quadra quadra,char face,int qtd);
+
 #endif
