@@ -145,7 +145,7 @@ int grafoArestaGetOrientacao(Aresta a){
 void getIndexes(Grafo g){
     grafo *graph = (grafo*)g;
     for(int i=0; i<graph->qtdAtual; i++){
-        printf("%d - %s\n", i, graph->vertices[i]->id);
+        printf("vertice na posição %d do array interno: %s\n", i, graph->vertices[i]->id);
     }
 }
 
@@ -182,6 +182,60 @@ Vertice grafoInsereVertice(Grafo g, char *id, void *info){
     hashInsert(graf->indices,vertex->id,indice);
     graf->qtdAtual++;
     return vertex;
+}
+
+void* grafoRemoveVertice(Grafo g, Vertice v, void(*freeArestaData)(void*)){
+    grafo *graph = (grafo*)g;
+    vertice *vertex = (vertice*)v;
+
+    vertice **arrayNovo = malloc(sizeof(vertice*)*graph->max);
+    vertice **arrayAntigo = graph->vertices;
+
+    int contadorArrayNovo = 0;
+
+    List arestas;
+    Node aux, aux2;
+    aresta *edge;
+
+    for(int i=0;i<graph->qtdAtual;i++){
+        if(i==vertex->index) continue;
+        arestas = arrayAntigo[i]->adjacentes;
+        aux = listGetFirst(arestas);
+        aux2;
+        while(aux){
+            edge = nodeGetData(aux);
+            aux2 = aux;
+            aux = nodeGetNext(aux);
+            if(edge->fim->index == vertex->index){
+                _freeAresta(listRemoveNode(arestas,aux2),freeArestaData);
+            }
+        }
+    }
+
+    arestas = arrayAntigo[vertex->index]->adjacentes;
+    while(listLenght(arestas) != 0){
+        aux = listGetFirst(arestas);
+        _freeAresta(listRemoveNode(arestas,aux),freeArestaData);
+    }
+
+    for(int i=0;i<graph->qtdAtual;i++){
+        if(i != vertex->index){
+            arrayNovo[contadorArrayNovo] = arrayAntigo[i];
+            int *novoIndex = malloc(sizeof(int));
+            *novoIndex = contadorArrayNovo;
+            free(hashUpdateKey(graph->indices,arrayAntigo[i]->id,novoIndex));
+            contadorArrayNovo++;
+        }
+    }
+
+    void *returnValue = vertex->data;
+    free(vertex->adjacentes);
+    free(vertex);
+
+    graph->qtdAtual--;
+    graph->vertices = arrayNovo;
+    free(arrayAntigo);
+    return returnValue;
 }
 
 char* verticeGetId(Vertice v){
@@ -243,7 +297,6 @@ void grafoRemoveAresta(Grafo g, char *v1, char *v2, void(*freeArestaData)(void*)
     
     if(aux){
         _freeAresta(listRemoveNode(arestas,aux),freeArestaData);
-        printf("Removeu\n");
     }
     return;
 }

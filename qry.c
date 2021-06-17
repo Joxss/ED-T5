@@ -432,6 +432,9 @@ void qryCv(QuadTree casosCv, Htable cepXquadra, int n, char id[], char face, dou
     Quadra quadra = hashGetKey(cepXquadra,id);
     
     //calcula os valores para o quadrado que contem o numero de casos de covid na quadra
+    if(quadra == NULL){
+        printf("cep %s inexistente krl q merda em vandao\n",id);
+    }
     quadraAddCasos(quadra, face, n);
     setCv(&x, &y, &w, &h, n,quadra,face,num);
     Quad q = createQuad(x,y,w,h,n);
@@ -909,7 +912,9 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
 
     fprintf(pathTxt,"Caminho mais rapido: ");
     List caminhoMaisRapido = melhorCaminho(ruas,vInicio,vFim,ruaGetTempo,pathTxt);
-
+    if(caminhoMaisRapido == NULL){
+        printf("caminhomaisrapido nulo\n");
+    }
     if(caminhoMaisCurto == NULL || caminhoMaisRapido == NULL) return;
 
     FILE *svg = fopen(pathSvg,"a");

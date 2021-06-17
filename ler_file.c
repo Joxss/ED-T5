@@ -234,6 +234,7 @@ void _setRegistrador(Ponto registradores[], char string[], Ponto coord){
 
 Ponto _getRegistrador(Ponto registradores[], char string[]){
     if(!strcmp(string,"R0")){
+        printf("Registrador R%d: %lf %lf\n",0,pontoGetX(registradores[0]),pontoGetY(registradores[0]));
         return registradores[0];
     }else if(!strcmp(string,"R1")){
         return registradores[1];
@@ -443,6 +444,7 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             Quadra quadra = hashGetKey(cepXquadra,id);
             if(quadra == NULL) continue;
             Ponto p = quadraGetEndereco(quadra,face,n);
+            printf("########################%lf ----- %lf##########################\n",pontoGetX(p),pontoGetY(p));
             _setRegistrador(registradores,registrador,p);
         }
         else if(!strcmp(comando,"@g?")){

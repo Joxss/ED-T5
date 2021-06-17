@@ -51,101 +51,108 @@
 
 //     Rua r = createRua("nomedarua",quadra,quadra,4.5,4.5);
 //     grafoInsereAresta(g,"vertice0","vertice1",r);
-//     // r = createRua("nomedarua",quadra,quadra,4.5,4.5);
-//     // grafoInsereAresta(g,"vertice1","vertice0",r);
+//     r = createRua("nomedarua",quadra,quadra,4.5,4.5);
+//     grafoInsereAresta(g,"vertice1","vertice0",r);
     
 //     r = createRua("nomedarua",quadra,quadra,8.5,8.5);
 //     grafoInsereAresta(g,"vertice0","vertice7",r);
-//     // r = createRua("nomedarua",quadra,quadra,8.5,8.5);
-//     // grafoInsereAresta(g,"vertice7","vertice0",r);
+//     r = createRua("nomedarua",quadra,quadra,8.5,8.5);
+//     grafoInsereAresta(g,"vertice7","vertice0",r);
 
 //     r = createRua("nomedarua",quadra,quadra,11.5,11.5);
 //     grafoInsereAresta(g,"vertice1","vertice7",r);
-//     // r = createRua("nomedarua",quadra,quadra,11.5,11.5);
-//     // grafoInsereAresta(g,"vertice7","vertice1",r);
+//     r = createRua("nomedarua",quadra,quadra,11.5,11.5);
+//     grafoInsereAresta(g,"vertice7","vertice1",r);
     
 //     r = createRua("nomedarua",quadra,quadra,8.5,8.5);
 //     grafoInsereAresta(g,"vertice1","vertice2",r);
-//     // r = createRua("nomedarua",quadra,quadra,8.5,8.5);
-//     // grafoInsereAresta(g,"vertice2","vertice1",r);
+//     r = createRua("nomedarua",quadra,quadra,8.5,8.5);
+//     grafoInsereAresta(g,"vertice2","vertice1",r);
 
 //     r = createRua("nomedarua",quadra,quadra,7.5,7.5);
 //     grafoInsereAresta(g,"vertice2","vertice3",r);
-//     // r = createRua("nomedarua",quadra,quadra,7.5,7.5);
-//     // grafoInsereAresta(g,"vertice3","vertice2",r);
+//     r = createRua("nomedarua",quadra,quadra,7.5,7.5);
+//     grafoInsereAresta(g,"vertice3","vertice2",r);
     
 //     r = createRua("nomedarua",quadra,quadra,4.5,4.5);
 //     grafoInsereAresta(g,"vertice2","vertice5",r);
-//     // r = createRua("nomedarua",quadra,quadra,4.5,4.5);
-//     // grafoInsereAresta(g,"vertice5","vertice2",r);
+//     r = createRua("nomedarua",quadra,quadra,4.5,4.5);
+//     grafoInsereAresta(g,"vertice5","vertice2",r);
     
 //     r = createRua("nomedarua",quadra,quadra,2.5,2.5);
 //     grafoInsereAresta(g,"vertice2","vertice8",r);
-//     // r = createRua("nomedarua",quadra,quadra,2.5,2.5);
-//     // grafoInsereAresta(g,"vertice8","vertice2",r);
+//     r = createRua("nomedarua",quadra,quadra,2.5,2.5);
+//     grafoInsereAresta(g,"vertice8","vertice2",r);
     
 //     r = createRua("nomedarua",quadra,quadra,9.5,9.5);
 //     grafoInsereAresta(g,"vertice3","vertice4",r);
-//     // r = createRua("nomedarua",quadra,quadra,9.5,9.5);
-//     // grafoInsereAresta(g,"vertice4","vertice3",r);
+//     r = createRua("nomedarua",quadra,quadra,9.5,9.5);
+//     grafoInsereAresta(g,"vertice4","vertice3",r);
     
 //     r = createRua("nomedarua",quadra,quadra,14.5,14.5);
 //     grafoInsereAresta(g,"vertice3","vertice5",r);
-//     // r = createRua("nomedarua",quadra,quadra,14.5,14.5);
-//     // grafoInsereAresta(g,"vertice5","vertice3",r);
+//     r = createRua("nomedarua",quadra,quadra,14.5,14.5);
+//     grafoInsereAresta(g,"vertice5","vertice3",r);
 
 //     r = createRua("nomedarua",quadra,quadra,10.5,10.5);
 //     grafoInsereAresta(g,"vertice4","vertice5",r);
-//     // r = createRua("nomedarua",quadra,quadra,10.5,10.5);
-//     // grafoInsereAresta(g,"vertice5","vertice4",r);
+//     r = createRua("nomedarua",quadra,quadra,10.5,10.5);
+//     grafoInsereAresta(g,"vertice5","vertice4",r);
 
 //     r = createRua("nomedarua",quadra,quadra,2.5,2.5);
 //     grafoInsereAresta(g,"vertice5","vertice6",r);
-//     // r = createRua("nomedarua",quadra,quadra,2.5,2.5);
-//     // grafoInsereAresta(g,"vertice6","vertice5",r);
+//     r = createRua("nomedarua",quadra,quadra,2.5,2.5);
+//     grafoInsereAresta(g,"vertice6","vertice5",r);
 
 //     r = createRua("nomedarua",quadra,quadra,1.5,1.5);
 //     grafoInsereAresta(g,"vertice6","vertice7",r);
-//     // r = createRua("nomedarua",quadra,quadra,1.5,1.5);
-//     // grafoInsereAresta(g,"vertice7","vertice6",r);
+//     r = createRua("nomedarua",quadra,quadra,1.5,1.5);
+//     grafoInsereAresta(g,"vertice7","vertice6",r);
     
 //     r = createRua("nomedarua",quadra,quadra,6.5,6.5);
 //     grafoInsereAresta(g,"vertice6","vertice8",r);
-//     // r = createRua("nomedarua",quadra,quadra,6.5,6.5);
-//     // grafoInsereAresta(g,"vertice8","vertice6",r);
+//     r = createRua("nomedarua",quadra,quadra,6.5,6.5);
+//     grafoInsereAresta(g,"vertice8","vertice6",r);
 
 //     r = createRua("nomedarua",quadra,quadra,7.5,7.5);
 //     grafoInsereAresta(g,"vertice7","vertice8",r);
-//     // r = createRua("nomedarua",quadra,quadra,7.5,7.5);
-//     // grafoInsereAresta(g,"vertice8","vertice7",r);
+//     r = createRua("nomedarua",quadra,quadra,7.5,7.5);
+//     grafoInsereAresta(g,"vertice8","vertice7",r);
 
 //     //printGrafo(g);
 
 //     //printf("%d\n",grafoExisteAresta(g,"vertice7","vertice8"));
 //     //grafoRemoveAresta(g,"vertice0","vertice7",freePonto);
-//     //printGrafo(g);
-//     //getIndexes(g);
+//     printf("ANTES DE REMOVER O VERTICE2\n");
+//     getIndexes(g);
+//     printGrafo(g);
 
+//     Vertice *array = grafoGetVertices(g);
+
+//     freePonto(grafoRemoveVertice(g,array[2],freeRua));
+//     printf("DEPOIS DE REMOVER O VERTICE2\n");
+//     getIndexes(g);
+//     printGrafo(g);
 //     // double *dist = dijkstra(g,"vertice3",ruaGetVelocidadeMedia);
 //     // for(int i=0; i<9; i++){
 //     //     printf("%d até %d: %lf\n",3,i, dist[i]);
 //     // }
 //     // free(dist);
-//     Grafo naoDirecioado = copiaParaNaoDirecionado(g);
-//     Grafo mst = primMST(g,ruaGetDistancia);
+//     // Grafo naoDirecioado = copiaParaNaoDirecionado(g);
+//     // Grafo mst = primMST(g,ruaGetDistancia);
 
-//     FILE *svg = fopen("./casos-teste/testes-svg/grafo-teste.svg","w");
-//     fprintf(svg,"<svg>\n");
-//     svgPrintGrafo(svg, g, 0);
-//     svgPrintGrafo(svg, mst, 1);
-//     fprintf(svg,"</svg>");
-//     fclose(svg);
+//     // FILE *svg = fopen("./casos-teste/testes-svg/grafo-teste.svg","w");
+//     // fprintf(svg,"<svg>\n");
+//     // svgPrintGrafo(svg, g, 0);
+//     // svgPrintGrafo(svg, mst, 1);
+//     // fprintf(svg,"</svg>");
+//     // fclose(svg);
 
 //     // printGrafo(mst);
 
+//     // freeMST(naoDirecioado);
+//     // freeMST(mst);
 //     freeGrafo(g,freePonto,freeRua);
-//     freeMST(naoDirecioado);
-//     freeMST(mst);
 //     freeQuadra(quadra);
 
 

@@ -1,0 +1,4 @@
+@xy R3 786.000000 282.800000
+@xy R5 8842.500000 3181.500000
+ccv ccvperc-smpls-bike-diag
+pb? perc-smpls-bike-diag R3 R5 darkgray

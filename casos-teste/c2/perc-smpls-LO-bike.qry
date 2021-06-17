@@ -1,0 +1,4 @@
+@xy R3 786.000000 282.800000
+@xy R4 8842.500000 282.800000
+ccv ccvperc-smpls-LO-bike
+pb? perc-smpls-LO-bike R3 R4 blue
