@@ -31,4 +31,6 @@ int postosSaudeInsPolig(QuadNode covid, Poligono polig);
 *  Retorno: Se houverem pontos na quadtree retorna um vetor de pontos com os n pontos mais proximos, caso contrário retorna NULL. */ 
 Ponto * shellSortParcial(QuadTree postos, int k, Ponto endereco, int *n);
 
+int pointInsPolig(Poligono polig, Ponto p);
+
 #endif

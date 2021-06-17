@@ -437,6 +437,7 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             Ponto p = genericGetPonto(QtGetInfo(trees[10],nodeMorador));
             Ponto copia = createPoint(pontoGetX(p),pontoGetY(p));
             _setRegistrador(registradores,registrador,copia);
+            qryReg(qryFigures,p,registrador);
         }
         else if(!strcmp(comando,"@e?")){
             fscanf(qry,"%s %s %c %d",registrador,id,&face,&n);
@@ -444,6 +445,7 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             if(quadra == NULL) continue;
             Ponto p = quadraGetEndereco(quadra,face,n);
             _setRegistrador(registradores,registrador,p);
+            qryReg(qryFigures,p,registrador);
         }
         else if(!strcmp(comando,"@g?")){
             fscanf(qry,"%s %s",registrador,id);
@@ -455,11 +457,13 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             Ponto p = genericGetPonto(QtGetInfo(NULL,nodeEquipamento));
             Ponto copia = createPoint(pontoGetX(p),pontoGetY(p));
             _setRegistrador(registradores,registrador,copia);
+            qryReg(qryFigures,p,registrador);
         }
         else if(!strcmp(comando,"@xy")){
             fscanf(qry,"%s %lf %lf",registrador,&x,&y);
             Ponto p = createPoint(x,y);
             _setRegistrador(registradores,registrador,p);
+            qryReg(qryFigures,p,registrador);
         }
         else if(!strcmp(comando,"ccv")){
             fscanf(qry,"%s",sufix);

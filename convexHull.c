@@ -185,32 +185,27 @@ Generic *convexHull(List l, int *arraySize){
     return convex;
 }
 
-int _pointInsPolig(Poligono polig, Ponto p){
+int orientation2(double px, double py, double qx, double qy, double rx, double ry) { 
+    double val = (qy - py) * (rx - qx) - (qx - px) * (ry - qy); 
+    if (val == 0) return 0;  // colinear 
+    return (val > 0)? 1 : 2; // horario ou anti-horario
+} 
+
+int pointInsPolig(Poligono polig, Ponto p){
     int n = poligGetQtd(polig);
     double *x = poligGetArrayX(polig);
     double *y = poligGetArrayY(polig);
+    double px = pontoGetX(p), py = pontoGetY(p);
     Ponto p1, p2;
     for(int i=0; i<n; i++){
         if(i==(n-1)){
-            p1 = createPoint(x[i],y[i]);
-            p2 = createPoint(x[0],y[0]);
-            if(orientation(p1,p2,p)!=2){
-                free(p1);
-                free(p2);
+            if(orientation2(x[i],y[i],x[0],y[0],px,py)!=2){
                 return 0;
             }
-            free(p1);
-            free(p2);
         }else{
-            p1 = createPoint(x[i],y[i]);
-            p2 = createPoint(x[i+1],y[i+1]);
-            if(orientation(p1,p2,p)!=2){
-                free(p1);
-                free(p2);
+            if(orientation2(x[i],y[i],x[i+1],y[i+1],px,py)!=2){
                 return 0;
             }
-            free(p1);
-            free(p2);
         }
     }
     return 1;
@@ -224,7 +219,7 @@ int postosSaudeInsPolig(QuadNode postos, Poligono polig){ //QtreeRoot Qtree
 
         Ponto p = genericGetValores(elemento);
 
-        if(_pointInsPolig(polig,p)){
+        if(pointInsPolig(polig,p)){
                 return 1;
         }
     }

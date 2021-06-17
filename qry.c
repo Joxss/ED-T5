@@ -875,6 +875,17 @@ void qryCatac(FILE *txt, QuadTree quadras, QuadTree hidrantes, QuadTree semaforo
 
 //************ T5 ************//
 
+void qryReg(List qryFigures, Ponto coord, char registrador[]){
+    double x = pontoGetX(coord), y = pontoGetY(coord);
+    Line line = createLine(x,y,x,0,"1px","black");
+    Generic g = createGeneric("linha",line,freeLine,NULL);
+    listInsert(qryFigures,g);
+
+    Text texto = createText("texto-reg",x+3,0,"black","black",registrador);
+    g = createGeneric("texto",texto,freeText,textGetPonto);
+    listInsert(qryFigures,g);
+}
+
 void qryCCV(QuadTree trees[], Grafo ruas, char path[]){
     FILE *svg = fopen(path,"w");
     Grafo ciclovias = grafoCopiaParaNaoDirecionado(ruas);
@@ -900,6 +911,30 @@ void qryCCV(QuadTree trees[], Grafo ruas, char path[]){
     fclose(svg);
 }
 
+int _printCidadeArqSufixo(QuadTree trees[], FILE *svg){
+    if (svg != NULL) {
+        fseek (svg, 0, SEEK_END);
+        long size = ftell(svg);
+
+        if (size == 0) {
+            fprintf(svg,"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
+            fprintf(svg,"<svg viewBox=\"-200 -200 20000 20000\" style=\"width: 10000px; height: 10000px\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n");
+            svgPrintFilter(svg);
+            QtPercorreProfundidade(trees[0],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[1],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[2],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[3],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[4],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[5],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[6],svgSelectTag,(void*)svg);
+            QtPercorreProfundidade(trees[7],svgSelectTag,(void*)svg);
+            return 1;
+        }
+        return 0;
+    }
+    
+}
+
 void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], FILE *pathTxt){
     Vertice vInicio = grafoVerticeMaisProximo(inicio,ruas);
     Vertice vFim = grafoVerticeMaisProximo(destino,ruas);
@@ -911,8 +946,13 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
     fprintf(pathTxt,"Caminho mais rapido: ");
     List caminhoMaisRapido = melhorCaminho(ruas,vInicio,vFim,ruaGetTempo,pathTxt);
 
+    FILE *svg = fopen(pathSvg,"a");
+    _printCidadeArqSufixo(trees,svg);
+
     if(caminhoMaisCurto == NULL && caminhoMaisRapido == NULL){
+        fprintf(pathTxt,"Não foi possível encontrar um caminho do ponto (%.2lf,%.2lf) até o ponto (%.2lf,%.2lf)",pontoGetX(pInicio),pontoGetY(pInicio),pontoGetX(pFim),pontoGetY(pFim));
         printf("caminho mais curto e mais rapido nulo\n");
+        fclose(svg);
         return;
     }
 
@@ -921,42 +961,22 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
         return;
     }
 
-    // else if(caminhoMaisRapido == NULL){
-    //     printf("caminho mais rapido nulo\n");
-    //     return;
-    // }
-
-    FILE *svg = fopen(pathSvg,"a");
-
-    //verifica se o arquivo esta vazio
-    if (svg != NULL) {
-        fseek (svg, 0, SEEK_END);
-        long size = ftell(svg);
-
-        if (size == 0) {
-            fprintf(svg,"<svg>\n");
-            QtPercorreProfundidade(trees[0],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[1],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[2],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[3],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[4],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[5],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[6],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[7],svgSelectTag,(void*)svg);
-
-        }
+    else if(caminhoMaisRapido == NULL){
+        printf("caminho mais rapido nulo\n");
+        return;
     }
+    
 
     fprintf(svg,"<circle id=\"inicio\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(inicio),pontoGetY(inicio));
     fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">I</text>\n",pontoGetX(inicio),pontoGetY(inicio));
-    svgPrintCaminho(svg,caminhoMaisCurto, corCurto, 1);
-    //svgPrintCaminho(svg,caminhoMaisRapido, corRapido, 0);
+    svgPrintCaminhoAnimado(svg,caminhoMaisCurto, corCurto, 1);
+    svgPrintCaminhoAnimado(svg,caminhoMaisRapido, corRapido, 0);
 
     fprintf(svg,"<circle id=\"fim\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(destino),pontoGetY(destino));
     fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">F</text>\n",pontoGetX(destino),pontoGetY(destino));
     fclose(svg);
     freeLista2(caminhoMaisCurto);
-    //freeLista2(caminhoMaisRapido);
+    freeLista2(caminhoMaisRapido);
 }
 
 void qryPb(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char pathSvg[], FILE *pathTxt){
@@ -1005,9 +1025,7 @@ void qryPb(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCu
     freeMST(agm);
 }
 
-void _qryBf(Grafo ruas, List qryFigures, FILE *txt, Aresta aresta, Quadra quadra, char face, int qtd){
-    Vertice origem = grafoArestaGetInicio(aresta);
-    Vertice destino = grafoArestaGetFim(aresta);
+void _qryBf(Grafo ruas, List qryFigures, FILE *txt, Vertice origem, Vertice destino, Quadra quadra, char face, int qtd){
     double x = quadraGetX(quadra), y = quadraGetY(quadra), w = quadraGetW(quadra), h = quadraGetH(quadra);
     Line line;
     Generic generic;
@@ -1034,9 +1052,6 @@ void _qryBf(Grafo ruas, List qryFigures, FILE *txt, Aresta aresta, Quadra quadra
     }
 
     grafoRemoveAresta(ruas,grafoVerticeGetId(origem),grafoVerticeGetId(destino),freeRua);
-    // TXT: listar cep e face referente ao trecho
-    // interditado e o número total de casos de
-    // coviid naquela face.
     txtBfQry(txt,quadra,face,qtd);
 }
 
@@ -1047,6 +1062,7 @@ void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt){
     Quadra quadraDireita, quadraEsquerda;
     List arestas;
     Node aux;
+    Vertice v1, v2;
     Aresta aresta;
     Rua rua;
     int orientacao;
@@ -1063,6 +1079,8 @@ void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt){
 
             quadraDireita = ruaGetQuadraDireita(rua);
             quadraEsquerda = ruaGetQuadraEsquerda(rua);
+            v1 = grafoArestaGetInicio(aresta);
+            v2 = grafoArestaGetFim(aresta);
             casosLadoDireito = 0;
             casosLadoEsquerdo = 0;
 
@@ -1073,32 +1091,32 @@ void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt){
 
                 if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'O');
 
-                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'L',casosLadoDireito);
-                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'O',casosLadoEsquerdo);
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraDireita,'L',casosLadoDireito);
+                if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraEsquerda,'O',casosLadoEsquerdo);
 
             }else if(orientacao == 2){ // norte
                 if(quadraDireita != NULL) casosLadoDireito = quadraGetCasos(quadraDireita, 'O');
 
                 if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'L');
                 
-                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'O',casosLadoDireito);
-                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'L',casosLadoEsquerdo);
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraDireita,'O',casosLadoDireito);
+                if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraEsquerda,'L',casosLadoEsquerdo);
 
             }else if(orientacao == 3){ // leste
                 if(quadraDireita != NULL) casosLadoDireito = quadraGetCasos(quadraDireita, 'N');
                 
                 if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'S');
 
-                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'N',casosLadoDireito);
-                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'S',casosLadoEsquerdo);
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraDireita,'N',casosLadoDireito);
+                if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraEsquerda,'S',casosLadoEsquerdo);
 
             }else if(orientacao == 4){ // oeste
                 if(quadraDireita != NULL) casosLadoDireito = quadraGetCasos(quadraDireita, 'S');
 
                 if(quadraEsquerda != NULL) casosLadoEsquerdo = quadraGetCasos(quadraEsquerda, 'N');
 
-                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,aresta,quadraDireita,'S',casosLadoDireito);
-                else if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,aresta,quadraEsquerda,'N',casosLadoEsquerdo);
+                if(casosLadoDireito > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraDireita,'S',casosLadoDireito);
+                if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraEsquerda,'N',casosLadoEsquerdo);
 
             }
             // else{
@@ -1151,61 +1169,65 @@ void qrySp(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCu
 
     Generic g;
     Ponto p;
-
+    
     //verifica se o arquivo esta vazio
-    if (svg != NULL) {
-        fseek (svg, 0, SEEK_END);
-        long size = ftell(svg);
+    if (_printCidadeArqSufixo(trees,svg) == 1) {
+        List casos = QuadTToList(trees[9]);
 
-        if (size == 0) {
-            fprintf(svg,"<svg>\n");
-            QtPercorreProfundidade(trees[0],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[1],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[2],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[3],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[4],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[5],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[6],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[7],svgSelectTag,(void*)svg);
-            QtPercorreProfundidade(trees[9],svgSelectTag,(void*)svg);
+        List pontos = _pontos(casos);
 
-            List casos = QuadTToList(trees[9]);
+        int count = listLenght(pontos);
+        Generic *convex = convexHull(pontos,&count);
 
-            List pontos = _pontos(casos);
-
-            int count = listLenght(pontos);
-            Generic *convex = convexHull(pontos,&count);
-
-            if(convex == NULL){
-                printf("Não foi possivel formar a envoltoria convexa\n");
-                freeLista(pontos,freeGeneric);
-                freeLista2(casos);
-                return;
-            }
-
-            double *xPoli = malloc(sizeof(double)*count);
-            double *yPoli = malloc(sizeof(double)*count);
-
-            for(int i=0;i<count; i++){
-
-                g = convex[i];
-                p = genericGetPonto(g);
-
-                xPoli[i] = pontoGetX(p);
-                yPoli[i] = pontoGetY(p);
-            }
-            Poligono poli = createPoligono(count,xPoli,yPoli);
-            poligSetCor(poli,"purple");
-            svgPrintPoligono(svg,poli);
-            freePolig(poli);
-
-
+        if(convex == NULL){
+            printf("Não foi possivel formar a envoltoria convexa\n");
             freeLista(pontos,freeGeneric);
             freeLista2(casos);
-            free(convex);
+            return;
         }
+
+        double *xPoli = malloc(sizeof(double)*count);
+        double *yPoli = malloc(sizeof(double)*count);
+
+        for(int i=0;i<count; i++){
+
+            g = convex[i];
+            p = genericGetPonto(g);
+
+            xPoli[i] = pontoGetX(p);
+            yPoli[i] = pontoGetY(p);
+        }
+        Poligono poli = createPoligono(count,xPoli,yPoli);
+        poligSetCor(poli,"purple");
+        svgPrintPoligono(svg,poli);
+
+        int qtdVertices = grafoGetQtdVertices(ruas);
+        Vertice *vertices = grafoGetVertices(ruas);
+
+        for(int i=0; i<qtdVertices;i++){
+            Vertice vertex = vertices[i];
+            p = grafoVerticeGetData(vertex);
+            if(pointInsPolig(poli,p)){
+                vertices = grafoRemoveVertice(ruas,vertex,freePonto,freeRua);
+                i--;
+                qtdVertices = grafoGetQtdVertices(ruas);
+            }
+        }
+        printf("SAIU DO FOR QUE REMOVE\n");
+        freePolig(poli);
+
+        freeLista(pontos,freeGeneric);
+        freeLista2(casos);
+        free(convex);
+
+        fclose(svg);
+
+        qryP(trees,ruas,inicio,destino,corCurto,corRapido,pathSvg,txt);
     }
-    fclose(svg);
+    // 1 2 3 4 5 6 7 8
+    // 1 3 4 5 6 7 8
+    
+    //fclose(svg);
 }
 
 

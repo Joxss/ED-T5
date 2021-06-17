@@ -1,4 +1,5 @@
-<svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg viewBox="-200 -200 20000 20000" style="width: 20000px; height: 20000px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
 <filter id="shadow1">
 <feOffset dx="5" dy="5" result="offsetblur"/>

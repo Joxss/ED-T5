@@ -3,7 +3,7 @@
 #include "math.h"
 #include "rua.h"
 
-#define INT_MAX 999999999
+#define INT_MAX 999999999.0
 typedef struct{
     int index;
     char id[100];
@@ -182,6 +182,62 @@ Vertice grafoInsereVertice(Grafo g, char *id, void *info){
     hashInsert(graf->indices,vertex->id,indice);
     graf->qtdAtual++;
     return vertex;
+}
+
+Vertice* grafoRemoveVertice(Grafo g, Vertice v, void(*freeVerticeData)(void*), void(*freeArestaData)(void*)){
+    grafo *graph = (grafo*)g;
+    vertice *vertex = (vertice*)v;
+
+    vertice **arrayNovo = malloc(sizeof(vertice*)*graph->max);
+    vertice **arrayAntigo = graph->vertices;
+
+    int contadorArrayNovo = 0;
+
+    List arestas;
+    Node aux, aux2;
+    aresta *edge;
+
+    for(int i=0;i<graph->qtdAtual;i++){
+        if(i==vertex->index) continue;
+        arestas = arrayAntigo[i]->adjacentes;
+        aux = listGetFirst(arestas);
+        aux2;
+        while(aux){
+            edge = nodeGetData(aux);
+            aux2 = aux;
+            aux = nodeGetNext(aux);
+            if(edge->fim->index == vertex->index){
+                _freeAresta(listRemoveNode(arestas,aux2),freeArestaData);
+            }
+        }
+    }
+
+    arestas = arrayAntigo[vertex->index]->adjacentes;
+    while(listLenght(arestas) != 0){
+        aux = listGetFirst(arestas);
+        _freeAresta(listRemoveNode(arestas,aux),freeArestaData);
+    }
+
+    for(int i=0;i<graph->qtdAtual;i++){
+        if(i != vertex->index){
+            arrayNovo[contadorArrayNovo] = arrayAntigo[i];
+            int *novoIndex = malloc(sizeof(int));
+            *novoIndex = contadorArrayNovo;
+            free(hashUpdateKey(graph->indices,arrayAntigo[i]->id,novoIndex));
+            arrayNovo[contadorArrayNovo]->index = contadorArrayNovo;
+            contadorArrayNovo++;
+        }
+    }
+
+    // void *returnValue = vertex->data;
+    freeVerticeData(vertex->data);
+    free(vertex->adjacentes);
+    free(vertex);
+
+    graph->qtdAtual--;
+    graph->vertices = arrayNovo;
+    free(arrayAntigo);
+    return (void**)arrayNovo;
 }
 
 char* verticeGetId(Vertice v){

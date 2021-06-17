@@ -38,6 +38,9 @@ Ponto grafoArestaGetPontoMedio(Aresta a);
 int grafoArestaGetOrientacao(Aresta a);
 
 Vertice grafoInsereVertice(Grafo g, char *id, void *info);
+
+Vertice* grafoRemoveVertice(Grafo g, Vertice v, void(*freeVerticeData)(void*), void(*freeArestaData)(void*));
+
 void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info);
 
 char* verticeGetId(Vertice v);
