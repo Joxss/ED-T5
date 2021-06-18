@@ -1208,9 +1208,10 @@ void qrySp(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCu
             Vertice vertex = vertices[i];
             p = grafoVerticeGetData(vertex);
             if(pointInsPolig(poli,p)){
-                vertices = grafoRemoveVertice(ruas,vertex,freePonto,freeRua);
-                i--;
-                qtdVertices = grafoGetQtdVertices(ruas);
+                // vertices = grafoRemoveVertice(ruas,vertex,freePonto,freeRua);
+                // i--;
+                // qtdVertices = grafoGetQtdVertices(ruas);
+                grafoMarkDeleted(ruas,vertex);
             }
         }
         printf("SAIU DO FOR QUE REMOVE\n");

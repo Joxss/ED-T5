@@ -9,6 +9,7 @@ typedef struct{
     char id[100];
     void *data;
     List adjacentes;
+    int deletado;
 }vertice;
 
 typedef struct{
@@ -166,6 +167,7 @@ vertice* _criaVertice(char *id, void *info, int index){
     vertex->data = info;
     vertex->adjacentes = createLista();
     vertex->index = index;
+    vertex->deletado = 0;
 
     return vertex;
 }
@@ -347,8 +349,10 @@ void relaxa(grafo* grafo, double* distancia, int* pai, int no1, int no2, double(
     aresta *edge = NULL;
     while(nodeEdge){
         edge = nodeGetData(nodeEdge);
-        if(edge->fim->index == no2)
-            break;
+        // if(edge->inicio->deletado == 0 && edge->fim->deletado == 0){
+            if(edge->fim->index == no2)
+                break;
+        // }
         nodeEdge = nodeGetNext(nodeEdge);
     }
 
@@ -412,7 +416,8 @@ int* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)) {
         nodeEdge = listGetFirst(graph->vertices[menor]->adjacentes);
         while(nodeEdge) {
             edge = nodeGetData(nodeEdge);
-            relaxa(graph, distancia, pai, menor, edge->fim->index,getPeso);
+            if(edge->inicio->deletado == 0 && edge->fim->deletado == 0)
+                relaxa(graph, distancia, pai, menor, edge->fim->index,getPeso);
             nodeEdge = nodeGetNext(nodeEdge);
         }
     }
@@ -623,6 +628,7 @@ Vertice grafoVerticeMaisProximo(Ponto ponto, Grafo g){
     int indexMenor = -1;
 
     for(int i=0; i<graph->qtdAtual; i++){
+        if(graph->vertices[i]->deletado == 1) continue;
         double dX = pontoGetX(ponto) - pontoGetX(graph->vertices[i]->data);
         dX = dX*dX;
         double dY = pontoGetY(ponto) - pontoGetY(graph->vertices[i]->data);
@@ -640,5 +646,8 @@ Vertice grafoVerticeMaisProximo(Ponto ponto, Grafo g){
     return v;
 }
 
-
+void grafoMarkDeleted(Grafo g, Vertice v){
+    vertice *vertex = (vertice*)v;
+    vertex->deletado = 1;
+}
 //
