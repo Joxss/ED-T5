@@ -349,10 +349,8 @@ void relaxa(grafo* grafo, double* distancia, int* pai, int no1, int no2, double(
     aresta *edge = NULL;
     while(nodeEdge){
         edge = nodeGetData(nodeEdge);
-        // if(edge->inicio->deletado == 0 && edge->fim->deletado == 0){
             if(edge->fim->index == no2)
                 break;
-        // }
         nodeEdge = nodeGetNext(nodeEdge);
     }
 
@@ -423,7 +421,6 @@ int* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)) {
     }
 
     free(distancia);
-
     return pai;
 }
 
@@ -618,7 +615,8 @@ List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*)
 
     free(caminhos);
     // printa txt
-    _descricaoTextualMelhorCaminho(graph,caminho,txt);
+    if(txt != NULL)
+        _descricaoTextualMelhorCaminho(graph,caminho,txt);
     return caminho;
 }
 
@@ -646,7 +644,7 @@ Vertice grafoVerticeMaisProximo(Ponto ponto, Grafo g){
     return v;
 }
 
-void grafoMarkDeleted(Grafo g, Vertice v){
+void grafoMarkDeleted(Vertice v){
     vertice *vertex = (vertice*)v;
     vertex->deletado = 1;
 }

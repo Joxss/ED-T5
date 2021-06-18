@@ -373,7 +373,7 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             fscanf(qry,"%d %s %c %lf\n", &n, id, &face, &num);
             fprintf(txt, "%s %d %s %c %lf\n",comando,n,id,face,num); //Grava o comando no txt
             
-            qrySoc(txt, trees[7], cepXquadra, qryFigures, n, id, face, num);
+            qrySoc(txt, ruas, trees[7], cepXquadra, qryFigures, n, id, face, num);
         }
         //************ T4 ************//
         else if(!strcmp(comando,"m?")){
@@ -426,7 +426,7 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             fprintf(txt,"%s %lf %lf %lf\n", comando, x, y, r);
 
             //chamar-func
-            qryCatac(txt, trees[3], trees[4], trees[5], trees[6], trees[10], trees[11], qryFigures, x, y, r);
+            qryCatac(txt, trees[3], trees[4], trees[5], trees[6], trees[7], trees[10], trees[11], trees[12], qryFigures, x, y, r);
 
         }
         //************ T5 ************//
@@ -656,7 +656,8 @@ void leVia(Htable cepXquadra, QuadTree vertices, Grafo ruas, char input[]){
             fscanf(via,"%s %lf %lf",id,&x,&y);
             Ponto p = createPoint(x,y);
             Vertice vertice = grafoInsereVertice(ruas,id,p);
-            QtInsert(vertices,p,vertice);
+            Generic g = createGeneric("vertice",vertice,NULL,grafoVerticeGetData);
+            QtInsert(vertices,p,g);
         }else if(strcmp("e",comando) == 0){
             fscanf(via,"%s %s %s %s %lf %lf %s",id1,id2,cepDireito,cepEsquerdo,&distancia,&velocidade,nome);
             Quadra quadraDireita = hashGetKey(cepXquadra,cepDireito);

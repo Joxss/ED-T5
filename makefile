@@ -1,9 +1,9 @@
 siguel: xablau
 
-FLAGS = -fstack-protector-all -std=c99
+FLAGS = -fstack-protector-all -std=c99 -g
 
-xablau: main.o list.o qry.o convexHull.o calculos.o ler_file.o svg.o txt.o generico.o quadrilatero.o ponto.o poligono.o circulo.o retangulo.o quadra.o texto.o linha.o args.o QuadTree.o hashTable.o pessoa.o morador.o estabelecimento.o chaveXvalor.o grafo.o rua.o
-	gcc -o siguel main.o list.o qry.o convexHull.o calculos.o ler_file.o svg.o txt.o generico.o quadrilatero.o ponto.o poligono.o circulo.o retangulo.o quadra.o texto.o linha.o args.o QuadTree.o hashTable.o pessoa.o morador.o estabelecimento.o chaveXvalor.o grafo.o rua.o -lm $(FLAGS) 
+xablau: main.o list.o qry.o convexHull.o calculos.o ler_file.o svg.o txt.o generico.o quadrilatero.o ponto.o poligono.o circulo.o retangulo.o quadra.o texto.o linha.o args.o QuadTree.o hashTable.o pessoa.o morador.o estabelecimento.o chaveXvalor.o grafo.o rua.o getImages.o
+	gcc -o siguel main.o list.o qry.o convexHull.o calculos.o ler_file.o svg.o txt.o generico.o quadrilatero.o ponto.o poligono.o circulo.o retangulo.o quadra.o texto.o linha.o args.o QuadTree.o hashTable.o pessoa.o morador.o estabelecimento.o chaveXvalor.o grafo.o rua.o getImages.o -lm $(FLAGS) 
 	rm -rf *.o *~
 
 main.o: main.c ler_file.h args.h 
@@ -84,5 +84,7 @@ grafo.o: grafo.c grafo.h
 rua.o: rua.c rua.h
 	gcc -o rua.o rua.c -c $(FLAGS)
 
+getImages.o: getImages.c getImages.c
+	gcc -o getImages.o getImages.c -c $(FLAGS)
 clean:
 	rm -rf *.o *~ siguel

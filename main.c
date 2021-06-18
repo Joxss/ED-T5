@@ -162,10 +162,9 @@ int main(int argc, char *argv[]){
     Htable cpfXcep = createHashTable(100);
     Htable cepXquadra = createHashTable(100);
 
-    Grafo ruas = createGrafo(getQtdVerticesVia(getPathVia(dir)));
-    QuadTree vertices = createQuadTree(verticeGetId);
 
-    QuadTree trees[12];
+    Grafo ruas;
+    QuadTree trees[13];
 
     trees[0] = createQuadTree(circGetId); //circulos
     trees[1] = createQuadTree(rectGetId); //retangulos
@@ -179,6 +178,7 @@ int main(int argc, char *argv[]){
     trees[9] = createQuadTree(QuadGetId); //casosCv
     trees[10] = createQuadTree(moradorGetCpf); //moradores
     trees[11] = createQuadTree(estabelecimentoGetCnpj); //estabelecimentos
+    trees[12] = createQuadTree(verticeGetId);
 
     leGeo(trees, cepXquadra, getPathGeo(dir));
 
@@ -191,7 +191,8 @@ int main(int argc, char *argv[]){
     }
 
     if(getPathVia(dir) != NULL){
-        leVia(cepXquadra,vertices,ruas,getPathVia(dir));
+        ruas = createGrafo(getQtdVerticesVia(getPathVia(dir)));
+        leVia(cepXquadra,trees[12],ruas,getPathVia(dir));
     }
 
     // // printf("%s",getPathSvg(dir));
@@ -253,11 +254,11 @@ int main(int argc, char *argv[]){
     freeQt(trees[9],freeGeneric);
     freeQt(trees[10],freeGeneric);
     freeQt(trees[11],freeGeneric);
+    printf("asdasdasdasdasd   -- - - --  %d\n",QtGetLenght(trees[12]));
+    freeQt(trees[12],freeGeneric);
 
-    printf("asdasdasdasdasd   -- - - --  %d\n",QtGetLenght(vertices));
 
-    freeGrafo(ruas,freePonto,freeRua);
-    freeQt2(vertices);
+    if(getPathVia(dir)!=NULL) freeGrafo(ruas,freePonto,freeRua);
 
     deleteDir(dir);
 }

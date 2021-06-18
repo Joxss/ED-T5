@@ -120,6 +120,14 @@ int checkInsideCirc(Generic elemento, double xCirc, double yCirc, double rCirc){
         double n2 = (y-yCirc)*(y-yCirc);
         return (n1+n2 <= rCirc*rCirc);
     }
+    else if(!strcmp(tipo,"vertice")){
+        Ponto p = genericGetPonto(elemento);
+        double x = pontoGetX(p);
+        double y = pontoGetY(p);
+        double n1 = (x-xCirc)*(x-xCirc);
+        double n2 = (y-yCirc)*(y-yCirc);
+        return (n1+n2 <= rCirc*rCirc);
+    }
 
     return 0;
 }

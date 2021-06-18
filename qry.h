@@ -106,7 +106,7 @@ void qryCi(FILE *txt, QuadTree postos, QuadTree casosCv, QuadTree densidade, Lis
               a lista que armazena figuras criadas por qrys, a quantidade de postos desejada,
               o cep da quadra relativa ao endereço, a face dessa quadra e o numero de endereço
 * Retorno: Não possui retorno*/
-void qrySoc(FILE *txt, QuadTree postos, Htable cepXquadra, List qryFigures, int k, char * cep, char face, double num);
+void qrySoc(FILE *txt, Grafo ruas, QuadTree postos, Htable cepXquadra, List qryFigures, int k, char * cep, char face, double num);
 
 // ------------------- T4 ------------------------//
 
@@ -144,7 +144,7 @@ void qryEplg(FILE *txt, QuadTree estabelecimentos, Htable tipoXdescricao, Htable
 * Parametros: Recebe o arquivo txt, ponteiros nao nulos para quadtrees de quadras, hidrantes, semaforos, radios, moradores, estabelecimentos,
               um ponteiro nao nulo para a lista de elemento criados por qrys e 3 doubles representando os valores x y e r da circunferencia
 * Retorno: Não possui retorno*/
-void qryCatac(FILE *txt, QuadTree quadras, QuadTree hidrantes, QuadTree semaforos, QuadTree radios, QuadTree moradores, QuadTree estabelecimentos, List qryFigures, double x, double y, double r);
+void qryCatac(FILE *txt, QuadTree quadras, QuadTree hidrantes, QuadTree semaforos, QuadTree radios, QuadTree postos, QuadTree moradores, QuadTree estabelecimentos, QuadTree vertices, List qryFigures, double x, double y, double r);
 
 
 // ------------------- T5 ------------------------//

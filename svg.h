@@ -43,6 +43,6 @@ void svgPrintGrafo(FILE *svg, Grafo grafo, int ehDirecionado);
 
 void svgPrintCaminho(FILE *svg, List caminho, char *cor, int ehMaisCurto);
 
-void svgPrintCaminhoAnimado(FILE *svg, List caminho, char *cor, int ehMaisCurto);
+void svgPrintCaminhoAnimado(FILE *svg, List caminho, char *cor, int ehMaisCurto, int taDeBike);
 
 #endif

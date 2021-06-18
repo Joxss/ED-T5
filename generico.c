@@ -37,7 +37,8 @@ void *genericGetValores(Generic g){
 void freeGeneric(Generic g){
     generico *elemento = (generico*) g;
 
-    elemento->freeFunc(elemento->valores);
+    if(elemento->freeFunc != NULL)
+        elemento->freeFunc(elemento->valores);
     
     free(elemento);
 }

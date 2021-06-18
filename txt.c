@@ -1,4 +1,5 @@
 #include "txt.h"
+#include "grafo.h"
 
 void txtPntQry(FILE *txt, Generic data){
     char *tipo = genericGetTipo(data);
@@ -251,7 +252,16 @@ void txtCatacQry(FILE *txt, Generic elemento){
     }else if(!strcmp(genericGetTipo(elemento), "morador")){
         Morador morador = genericGetValores(elemento);
         fprintf(txt,"Morador - CPF: %s. Endereço: %s %c %d %s\n", moradorGetCpf(morador), moradorGetCep(morador), moradorGetFace(morador), moradorGetNum(morador),  moradorGetCompl(morador));
-    }        
+    }
+    else if(!strcmp(genericGetTipo(elemento), "ponto")){
+        Ponto posto = genericGetValores(elemento);
+        fprintf(txt,"Posto de saúde - Coodenada: (%lf,%lf)\n", pontoGetX(posto),pontoGetY(posto));
+    }
+    else if(!strcmp(genericGetTipo(elemento), "vertice")){
+        Vertice vertice = genericGetValores(elemento);
+        Ponto p = genericGetPonto(elemento);
+        fprintf(txt,"Vértice - ID: %s. Coordenada: (%lf,%lf)\n", grafoVerticeGetId(vertice),pontoGetX(p),pontoGetY(p));
+    }          
 }
 
 // TXT: listar cep e face referente ao trecho

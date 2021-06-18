@@ -73,5 +73,5 @@ List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*)
 
 Vertice grafoVerticeMaisProximo(Ponto ponto, Grafo g);
 
-void grafoMarkDeleted(Grafo g, Vertice v);
+void grafoMarkDeleted(Vertice v);
 #endif
