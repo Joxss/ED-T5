@@ -19,5 +19,5 @@ cv 4 b08.2 O 55
 cv 4 b01.10 L 25
 cv 4 b02.8 O 10
 @g? R1 heb04.3
-@e? R2 b09.5 Face.N 50
+@e? R2 b09.5 N 50
 sp? perc-smpls-seg-equrb-endr R1 R2 red green

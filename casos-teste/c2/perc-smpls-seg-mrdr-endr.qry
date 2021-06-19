@@ -311,5 +311,5 @@ cv 4 B43-4.8 S 70
 cv 4 B32-2.6 L 40
 cv 4 B41-7.4 S 10
 @m? R0 000.014.151-82
-@e? R2 B40-1.6 Face.N 50
+@e? R2 B40-1.6 N 50
 sp? perc-smpls-seg-mrdr-endr R0 R2 black orange

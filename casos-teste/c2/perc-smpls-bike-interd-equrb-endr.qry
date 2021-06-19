@@ -351,6 +351,6 @@ cv 40 B30-2.12 N 10
 cv 40 B43-6.1 N 85
 bf 22
 @g? R1 hseB44-2.4
-@e? R2 B40-1.6 Face.N 50
+@e? R2 B40-1.6 N 50
 ccv -ccvperc-smpls-bike-interd-equrb-endr
 pb? perc-smpls-bike-interd-equrb-endr R1 R2 green

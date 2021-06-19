@@ -701,5 +701,5 @@ cv 4 B42-9.17 O 55
 cv 4 B44-5.5 N 10
 cv 4 B43-6.16 N 25
 @m? R0 000.004.611-64
-@e? R2 B43-6.3 Face.N 50
+@e? R2 B43-6.3 N 50
 sp? perc-smpls-seg-mrdr-endr R0 R2 black orange

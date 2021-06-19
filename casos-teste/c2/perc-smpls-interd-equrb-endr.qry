@@ -351,5 +351,5 @@ cv 40 B40-4.10 O 25
 cv 40 B44-3.6 N 100
 bf 22
 @g? R1 hseB44-2.4
-@e? R2 B40-1.6 Face.N 50
+@e? R2 B40-1.6 N 50
 p? perc-smpls-interd-equrb-endr R1 R2 red green

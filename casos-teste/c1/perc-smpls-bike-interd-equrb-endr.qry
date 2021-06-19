@@ -22,6 +22,6 @@ cv 40 b01.9 O 40
 cv 40 b05.8 S 10
 bf 22
 @g? R1 heb04.3
-@e? R2 b09.5 Face.N 50
+@e? R2 b09.5 N 50
 ccv -ccvperc-smpls-bike-interd-equrb-endr
 pb? perc-smpls-bike-interd-equrb-endr R1 R2 green

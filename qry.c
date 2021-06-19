@@ -935,31 +935,6 @@ void qryReg(List qryFigures, Ponto coord, char registrador[]){
     listInsert(qryFigures,g);
 }
 
-void qryCCV(QuadTree trees[], Grafo ruas, char path[]){
-    FILE *svg = fopen(path,"w");
-    Grafo ciclovias = grafoCopiaParaNaoDirecionado(ruas);
-    Grafo agm = primMST(ciclovias,ruaGetDistancia);
-    fprintf(svg,"<svg>\n");
-
-    QtPercorreProfundidade(trees[0],svgSelectTag,(void*)svg);
-    QtPercorreProfundidade(trees[1],svgSelectTag,(void*)svg);
-    QtPercorreProfundidade(trees[2],svgSelectTag,(void*)svg);
-    QtPercorreProfundidade(trees[3],svgSelectTag,(void*)svg);
-    QtPercorreProfundidade(trees[4],svgSelectTag,(void*)svg);
-    QtPercorreProfundidade(trees[5],svgSelectTag,(void*)svg);
-    QtPercorreProfundidade(trees[6],svgSelectTag,(void*)svg);
-    QtPercorreProfundidade(trees[7],svgSelectTag,(void*)svg);
-
-    //svgPrintGrafo(svg,ruas,0);
-    svgPrintGrafo(svg,ciclovias,0);
-    svgPrintGrafo(svg,agm,1);
-    fprintf(svg,"</svg>\n");
-
-    freeMST(ciclovias);
-    freeMST(agm);
-    fclose(svg);
-}
-
 int _printCidadeArqSufixo(QuadTree trees[], FILE *svg){
     if (svg != NULL) {
         fseek (svg, 0, SEEK_END);
@@ -984,6 +959,22 @@ int _printCidadeArqSufixo(QuadTree trees[], FILE *svg){
     
 }
 
+void qryCCV(QuadTree trees[], Grafo ruas, char path[]){
+    FILE *svg = fopen(path,"w");
+    Grafo ciclovias = grafoCopiaParaNaoDirecionado(ruas);
+    Grafo agm = primMST(ciclovias,ruaGetDistancia);
+    _printCidadeArqSufixo(trees,svg);
+
+    //svgPrintGrafo(svg,ruas,0);
+    svgPrintGrafo(svg,ciclovias,0);
+    svgPrintGrafo(svg,agm,1);
+    fprintf(svg,"</svg>\n");
+
+    freeMST(ciclovias);
+    freeMST(agm);
+    fclose(svg);
+}
+
 void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], FILE *pathTxt){
     Vertice vInicio = grafoVerticeMaisProximo(inicio,ruas);
     Vertice vFim = grafoVerticeMaisProximo(destino,ruas);
@@ -997,6 +988,12 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
 
     FILE *svg = fopen(pathSvg,"a");
     _printCidadeArqSufixo(trees,svg);
+
+    fprintf(svg,"<circle id=\"inicio\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(inicio),pontoGetY(inicio));
+    fprintf(svg,"<text id=\"pInicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">I</text>\n",pontoGetX(inicio),pontoGetY(inicio));
+
+    fprintf(svg,"<circle id=\"fim\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(destino),pontoGetY(destino));
+    fprintf(svg,"<text id=\"fim-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">F</text>\n",pontoGetX(destino),pontoGetY(destino));
 
     if(caminhoMaisCurto == NULL && caminhoMaisRapido == NULL){
         fprintf(pathTxt,"Não foi possível encontrar um caminho do ponto (%.2lf,%.2lf) até o ponto (%.2lf,%.2lf)",pontoGetX(pInicio),pontoGetY(pInicio),pontoGetX(pFim),pontoGetY(pFim));
@@ -1016,13 +1013,11 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
     }
     
 
-    fprintf(svg,"<circle id=\"inicio\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(inicio),pontoGetY(inicio));
-    fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">I</text>\n",pontoGetX(inicio),pontoGetY(inicio));
+    
     svgPrintCaminhoAnimado(svg,caminhoMaisCurto, corCurto, 1, 0);
     svgPrintCaminhoAnimado(svg,caminhoMaisRapido, corRapido, 0, 0);
 
-    fprintf(svg,"<circle id=\"fim\" r=\"7\" cx=\"%lf\" cy=\"%lf\" stroke-width=\"1px\" stroke=\"black\" fill=\"black\" fill-opacity=\"0.7\"/>\n",pontoGetX(destino),pontoGetY(destino));
-    fprintf(svg,"<text id=\"inicio-t\" x=\"%lf\" y=\"%lf\" stroke=\"white\" fill=\"white\" text-anchor=\"middle\" alignment-baseline=\"middle\" font-size=\"8\">F</text>\n",pontoGetX(destino),pontoGetY(destino));
+    
     fclose(svg);
     freeLista2(caminhoMaisCurto);
     freeLista2(caminhoMaisRapido);
@@ -1153,14 +1148,6 @@ void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt){
                 if(casosLadoEsquerdo > max) _qryBf(ruas,qryFigures,txt,v1,v2,quadraEsquerda,'N',casosLadoEsquerdo);
 
             }
-            // else{
-            //     printf("DIAGONAL ## ");
-            //     if(quadraDireita != NULL) printf("DIAGONAL - QUADRA DIREITA EXISTE ## ");
-
-            //     if(quadraEsquerda != NULL) printf("DIAGONAL - QUADRA ESQUERDA EXISTE");
-
-            //     printf("\n");
-            // }
         }
     }
 }
@@ -1199,15 +1186,16 @@ List _pontos(List casosCv){
 }
 
 void qrySp(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], FILE *txt){
-    FILE *svg = fopen(pathSvg,"a");
+    FILE *svg = fopen(pathSvg,"w");
 
     Generic g;
     Ponto p;
     
+    _printCidadeArqSufixo(trees,svg);
+    svgPrintGrafo(svg,ruas,0);
+
     List casos = QuadTToList(trees[9]);
-
     List pontos = _pontos(casos);
-
     int count = listLenght(pontos);
     Generic *convex = convexHull(pontos,&count);
 
@@ -1254,7 +1242,6 @@ void qrySp(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCu
     free(convex);
 
     fclose(svg);
-
     qryP(trees,ruas,inicio,destino,corCurto,corRapido,pathSvg,txt);
 }
 

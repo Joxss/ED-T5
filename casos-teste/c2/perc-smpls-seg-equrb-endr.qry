@@ -311,5 +311,5 @@ cv 4 B30-8.4 N 25
 cv 4 B32-10.10 N 25
 cv 4 B32-7.15 O 55
 @g? R1 hseB44-2.4
-@e? R2 B40-1.6 Face.N 50
+@e? R2 B40-1.6 N 50
 sp? perc-smpls-seg-equrb-endr R1 R2 red green

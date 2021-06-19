@@ -320,6 +320,7 @@ void grafoInsereAresta(Grafo g, char *v1, char *v2, void *info){
     vertice *inicio = graf->vertices[*indexInicio];
 
     listInsert(inicio->adjacentes,edge);
+
 }
 
 void printGrafo(Grafo g){
@@ -336,10 +337,11 @@ void printGrafo(Grafo g){
     }
 }
 
-void iniciaDijkstra(grafo* grafo, double* distancia, int* pai, int noInicial) {
+void iniciaDijkstra(grafo* grafo, double* distancia, int* pai, int* aberto, int noInicial) {
     for(int i = 0; i < grafo->qtdAtual; i++) {
         distancia[i] = INT_MAX;
         pai[i] = -1;
+        aberto[i] = 1;
     }
     distancia[noInicial] = 0;
 }
@@ -401,18 +403,14 @@ int* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)) {
     Node nodeEdge;
     aresta *edge;
     
-    iniciaDijkstra(graph, distancia, pai, noInicial);
+    iniciaDijkstra(graph, distancia, pai, aberto, noInicial);
 
-    for(int i = 0; i < graph->qtdAtual; i++) 
-        aberto[i] = 1;
-
-    while (existeAberto(graph, aberto))
-    {
+    while (existeAberto(graph, aberto)){
         menor = menorDistancia(graph, aberto, distancia);
         aberto[menor] = 0;
 
         nodeEdge = listGetFirst(graph->vertices[menor]->adjacentes);
-        while(nodeEdge) {
+        while(nodeEdge){
             edge = nodeGetData(nodeEdge);
             if(edge->inicio->deletado == 0 && edge->fim->deletado == 0)
                 relaxa(graph, distancia, pai, menor, edge->fim->index,getPeso);
@@ -422,12 +420,6 @@ int* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)) {
 
     free(distancia);
     return pai;
-}
-
-int printMST(int pai[], double pesos[], int n){
-    printf("Edge \tWeight\n");
-    for (int i = 0; i < n; i++)
-        printf("%d - %d \t%lf \n", pai[i], i, pesos[i]);
 }
 
 Grafo _converteGrafo(grafo* graph, int pai[], double pesos[]){
@@ -465,22 +457,18 @@ Grafo primMST(Grafo g, double(*getPeso)(void*)){
     Node nodeEdge;
     aresta *edge;
 
-    for (int i = 0; i < V; i++)
+    for(int i = 0; i < V; i++)
         key[i] = INT_MAX, mstSet[i] = 1, parent[i] = -1;
 
     key[0] = 0;
-    // parent[0] = -1;
-    for (int count = 0; count < V - 1; count++)
-    {
+    for(int count = 0; count < V - 1; count++){
         int u = menorDistancia(graph, mstSet, key);
         mstSet[u] = 0;
 
         nodeEdge = listGetFirst(graph->vertices[u]->adjacentes);
-        while (nodeEdge)
-        {
+        while(nodeEdge){
             edge = nodeGetData(nodeEdge);
-            if (mstSet[edge->fim->index] == 1 && getPeso(edge->data) < key[edge->fim->index])
-            {
+            if(mstSet[edge->fim->index] == 1 && getPeso(edge->data) < key[edge->fim->index]){
                 parent[edge->fim->index] = u;
                 key[edge->fim->index] = getPeso(edge->data);
             }
