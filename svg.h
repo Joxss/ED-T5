@@ -10,6 +10,9 @@
 #include "QuadTree.h"
 #include "grafo.h"
 
+/* Printa filtros utilizados por alguns elementos no svg.
+*  Parâmetros: Recebe o arquivo svg.
+*  Retorno: Não possui retorno. */
 void svgPrintFilter(FILE *svg);
 
 /* Abre a tag svg em um arquivo.
@@ -27,6 +30,9 @@ void svgCloseTag(char file[]);
 *  Retorno: Não possui retorno.*/ 
 void svgPrintList(List l, char svg[]);
 
+/* Printa um elemento do tipo poligono no arquivo svg.
+*  Parâmetros: Recebe o arquivo svg e um ponteiro não nulo para o poligono.
+*  Retorno: Não possui retorno.*/ 
 void svgPrintPoligono(FILE *svg, Poligono p);
 
 /* Verifica o tipo do elemento e seleciona a funcao correta para escreve-lo no svg.
@@ -34,15 +40,20 @@ void svgPrintPoligono(FILE *svg, Poligono p);
 *  Retorno: Não possui retorno.*/ 
 void svgSelectTag(Generic elemento, void *file);
 
-/* Escreve no arquivo svg o estadual atual de uma arvore.
+/* Escreve no arquivo svg o estado atual de uma arvore.
 *  Parâmetros: Recebe ponteiro não nulo a arvore e uma string contendo o caminho mais o nome do arquivo svg a ser gerado.
 *  Retorno: Não possui retorno.*/ 
 void svgPrintTreeState(QuadTree tree, char *path);
 
+/* Escreve no arquivo svg o estado atual de um grafo
+*  Parâmetros: Recebe o arquivo svg, um ponteiro nao nulo para o grafo e uma variavel booleana indicando se o grafo é direcionado ou não, 
+*  Retorno: Não possui retorno.*/ 
 void svgPrintGrafo(FILE *svg, Grafo grafo, int ehDirecionado);
 
-void svgPrintCaminho(FILE *svg, List caminho, char *cor, int ehMaisCurto);
-
+/* Escreve no arquivo svg o caminho animado com uma imagem.
+*  Parâmetros: Recebe o arquivo svg, um ponteiro nao nulo para a lista que contem as coordenadas do caminho, uma string contendo a cor do caminho
+               uma variavel booleana indicando se é um caminho mais rapido ou mais curto e uma variavel booleana indicando se é um percusso de uma ciclovia
+*  Retorno: Não possui retorno.*/ 
 void svgPrintCaminhoAnimado(FILE *svg, List caminho, char *cor, int ehMaisCurto, int taDeBike);
 
 #endif

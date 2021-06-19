@@ -99,6 +99,9 @@ void txtEplgQry(FILE *txt, Pessoa pessoa, Estabelecimento estabelecimento);
 *  Retorno: Não possui retorno*/
 void txtCatacQry(FILE *txt, Generic elemento);
 
+/* Grava no arquivo txt as informações da qry bf
+*  Parâmetros: Recebe um ponteiro não nulo para o arquivo txt um ponteiro não nulo para a quadra, a face utilizada e a quantidade de casos naquela face
+*  Retorno: Não possui retorno*/
 void txtBfQry(FILE *txt,Quadra quadra,char face,int qtd);
 
 #endif

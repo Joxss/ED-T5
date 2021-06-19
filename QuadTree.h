@@ -186,6 +186,10 @@ int QtGetLenght(QuadTree tree);
 */
 void QtOrdenarInsercao(QuadTree tree, List lista);
 
+/** Cria uma lista contendo todos os elementos armazenados em uma quadtree. A lista deve ter sua memória desalocada utilizando a função freeLista2
+ *  Parametros: Um ponteiro nao nulo para a quadtree.
+ *  Retorno: Uma lista contendo todos os elementos armazenados em uma quadtree.
+*/
 List QuadTToList(QuadTree tree);
 
 #endif

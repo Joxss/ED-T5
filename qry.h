@@ -148,16 +148,40 @@ void qryCatac(FILE *txt, QuadTree quadras, QuadTree hidrantes, QuadTree semaforo
 
 
 // ------------------- T5 ------------------------//
+/* Insere uma linha vertical do ponto armazenado no registrador até o topo do mapa e a identificação do registrador usado ao lado. 
+   Usada para as qrys "@m?", "@e?", "@g?" e "@xy"
+* Parametros: Recebe um ponteiro não nulo para a lista de figuras a serem inseridas no svg, o ponto armazenado no registrador e o id do registrador usado;
+* Retorno: Não possui retorno*/
 void qryReg(List qryFigures, Ponto coord, char registrador[]);
 
+/* Executa a qry ccv - Calcula a árvore geradora minima do grafo de ciclovias. 
+* Parametros: Recebe o array de quadtree contendo todas as quadtrees mantidas, o grafo de ruas e 
+              uma string do diretorio do arquivo que sera printado a arvore geradora minima;
+* Retorno: Não possui retorno*/
 void qryCCV(QuadTree trees[], Grafo ruas, char path[]);
 
+/* Executa a qry p? - Obtem o caminho mais rapido e o mais curto de uma posição para outra usando o grafo de ruas. 
+* Parametros: Recebe o array de quadtree contendo todas as quadtrees mantidas, o grafo de ruas, o ponto de inicio e de fim,
+              a cor do caminho mais curto, a cor do caminho mais rapido, o diretorio do arquivo que sera printado os caminhos e o arquivo txt
+* Retorno: Não possui retorno*/
 void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], FILE *pathTxt);
 
+/* Executa a qry pb? - Obtem o caminho mais curto de uma posição para outra usando a arvore geradora minima do grafo de ciclovias. 
+* Parametros: Recebe o array de quadtree contendo todas as quadtrees mantidas, o grafo de ruas, o ponto de inicio e de fim,
+              a cor do caminho mais curto, o diretorio do arquivo que sera printado os caminhos e o arquivo txt
+* Retorno: Não possui retorno*/
 void qryPb(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char pathSvg[], FILE *pathTxt);
 
+/* Executa a qry bf - Interdita as ruas que possuem mais que max casos de covid na face relativa a rua das quadras do lado esquerdo ou direito. 
+* Parametros: Recebe o grafo de ruas, o maximo de casos de covid, a lista de figuras criadas por qrys e o arquivo txt
+* Retorno: Não possui retorno*/
 void qryBf(Grafo ruas, int max, List qryFigures, FILE *txt);
 
+/* Executa a qry sp? - Obtem o caminho mais rapido e o mais curto de uma posição para outra usando o grafo de ruas
+                       evitando qualquer rua que passe pela envoltoria convexa dos casos de covid. 
+* Parametros: Recebe o array de quadtree contendo todas as quadtrees mantidas, o grafo de ruas, o ponto de inicio e de fim,
+              a cor do caminho mais curto, a cor do caminho mais rapido, o diretorio do arquivo que sera printado os caminhos e o arquivo txt
+* Retorno: Não possui retorno*/
 void qrySp(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCurto[], char corRapido[], char pathSvg[], FILE *txt);
 
 #endif

@@ -627,6 +627,7 @@ Vertice grafoVerticeMaisProximo(Ponto ponto, Grafo g){
 
     for(int i=0; i<graph->qtdAtual; i++){
         if(graph->vertices[i]->deletado == 1) continue;
+        if(listLenght(graph->vertices[i]->adjacentes)==0) continue;
         double dX = pontoGetX(ponto) - pontoGetX(graph->vertices[i]->data);
         dX = dX*dX;
         double dY = pontoGetY(ponto) - pontoGetY(graph->vertices[i]->data);

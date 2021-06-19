@@ -1,6 +1,10 @@
 #ifndef _H_RUA
 #define _H_RUA
 
+/* 
+    Esse header especifica um TAD que representa uma rua e possui funções para criação, desalocamento e acesso das variáveis dessa rua.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

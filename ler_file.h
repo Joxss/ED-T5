@@ -43,8 +43,15 @@ void leEc(QuadTree quadras, QuadTree estabelecimentos, Htable tipoXdescricao, ch
 *  Retorno: Não possui retorno. */
 void lePm(QuadTree quadras, QuadTree moradores, Htable cpfXpessoa, Htable cpfXcep, char input[]);
 
+/* Lê todas as linhas de um arquivo .via e insere os vértices e arestas especificados no arquivo
+*  Parâmetros: Recebe ponteiros não nulos para a hashTable de cepXquadra, um ponteiro não nulo para a quadtree de vértices,
+               um ponteiro não nulo para o grafo e o diretório do arquivo viario.
+*  Retorno: Não possui retorno. */
 void leVia(Htable cepXquadra, QuadTree vertices, Grafo ruas, char input[]);
 
+/* Obtem a quantidade de vértices especificados em um arquivo viario
+*  Parâmetros: Recebe o diretório do arquivo viario.
+*  Retorno: Retorna a quantidade de vértices que o arquivo viario define. */
 int getQtdVerticesVia(char input[]);
 
 #endif

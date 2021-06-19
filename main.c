@@ -178,7 +178,7 @@ int main(int argc, char *argv[]){
     trees[9] = createQuadTree(QuadGetId); //casosCv
     trees[10] = createQuadTree(moradorGetCpf); //moradores
     trees[11] = createQuadTree(estabelecimentoGetCnpj); //estabelecimentos
-    trees[12] = createQuadTree(verticeGetId);
+    trees[12] = createQuadTree(grafoVerticeGetId);
 
     leGeo(trees, cepXquadra, getPathGeo(dir));
 
