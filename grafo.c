@@ -66,6 +66,17 @@ void freeGrafo(Grafo g, void(*freeVerticeData)(void*), void(*freeArestaData)(voi
     free(graf);
 }
 
+void freeMST(Grafo mst){
+    grafo *graf = (grafo*)mst;
+    freeHashTable(graf->indices,free);
+    for(int i=0;i<graf->qtdAtual;i++){
+        freeLista(graf->vertices[i]->adjacentes,free);
+        free(graf->vertices[i]);
+    }
+    free(graf->vertices);
+    free(graf);
+}
+
 int grafoGetQtdVertices(Grafo g){
     grafo *graph = (grafo*)g;
     return graph->qtdAtual;
@@ -349,6 +360,8 @@ void iniciaDijkstra(grafo* grafo, double* distancia, int* pai, int* aberto, int 
 void relaxa(grafo* grafo, double* distancia, int* pai, int no1, int no2, double(*getPeso)(void*)) {
     Node nodeEdge = listGetFirst(grafo->vertices[no1]->adjacentes);
     aresta *edge = NULL;
+
+    //verifica se existe aresta de no1 para no2
     while(nodeEdge){
         edge = nodeGetData(nodeEdge);
             if(edge->fim->index == no2)
@@ -357,7 +370,7 @@ void relaxa(grafo* grafo, double* distancia, int* pai, int no1, int no2, double(
     }
 
     if(nodeEdge && edge) {
-        if(distancia[no2] > distancia[no1] + getPeso(edge->data)) {
+        if(distancia[no2] > distancia[no1] + getPeso(edge->data)){
             distancia[no2] = distancia[no1] + getPeso(edge->data);
             pai[no2] = no1;
         }
@@ -376,11 +389,13 @@ int existeAberto(grafo* grafo, int* aberto) {
 int menorDistancia(grafo* grafo, int* aberto, double* distancia) {
     int i, menor;
     
+    //menor indice aberto
     for(i = 0; i < grafo->qtdAtual; i++) {
         if(aberto[i])
             break;
     }
     
+    //nao existe aberto
     if(i == grafo->qtdAtual)
         return -1;
     
@@ -393,19 +408,19 @@ int menorDistancia(grafo* grafo, int* aberto, double* distancia) {
     return menor;
 }
 
-int* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)) {
+int* dijkstra(Grafo g, char *idRaiz, double(*getPeso)(void*)){
     grafo *graph = (grafo*)g;
     int noInicial = _getIndex(graph,idRaiz);
     double* distancia = (double*) malloc(graph->qtdAtual*sizeof(double));
     int* pai = malloc(sizeof(int) * graph->qtdAtual);
-    int menor;
     int aberto[graph->qtdAtual];
+    int menor;
     Node nodeEdge;
     aresta *edge;
     
     iniciaDijkstra(graph, distancia, pai, aberto, noInicial);
 
-    while (existeAberto(graph, aberto)){
+    while(existeAberto(graph, aberto)){
         menor = menorDistancia(graph, aberto, distancia);
         aberto[menor] = 0;
 
@@ -451,7 +466,7 @@ Grafo _converteGrafo(grafo* graph, int pai[], double pesos[]){
 Grafo primMST(Grafo g, double(*getPeso)(void*)){
     grafo *graph = (grafo*)g;
     int V = graph->qtdAtual;
-    int parent[V];
+    int parent[V]; // vertices[parent[i]] <----> vertices[i]
     double key[V];
     int mstSet[V];
     Node nodeEdge;
@@ -476,19 +491,7 @@ Grafo primMST(Grafo g, double(*getPeso)(void*)){
         }
     }
 
-    //printMST(parent,key,V);
     return _converteGrafo(graph,parent,key);
-}
-
-void freeMST(Grafo mst){
-    grafo *graf = (grafo*)mst;
-    freeHashTable(graf->indices,free);
-    for(int i=0;i<graf->qtdAtual;i++){
-        freeLista(graf->vertices[i]->adjacentes,free);
-        free(graf->vertices[i]);
-    }
-    free(graf->vertices);
-    free(graf);
 }
 
 //nao exerce mutação no grafo g
@@ -586,22 +589,25 @@ void _descricaoTextualMelhorCaminho(grafo *graph, List caminho, FILE *txt){
 List melhorCaminho(Grafo g, Vertice inicio, Vertice fim, double(*getPeso)(void*), FILE *txt){
     vertice *vInicio = (vertice*)inicio;
     vertice *vFim = (vertice*)fim;
-    int *caminhos = dijkstra(g, vInicio->id, getPeso);
+    
+    int *pais = dijkstra(g, vInicio->id, getPeso);
+
     grafo *graph = (grafo*)g;
 
     int index1 = vInicio->index;
     int index2 = vFim->index;
 
-    if(caminhos[index2] == -1){
-        free(caminhos);
+    // existe caminho para o vertice final
+    if(pais[index2] == -1){
+        free(pais);
         return NULL;
     }
 
     List caminho = createLista();
     listInsert(caminho,graph->vertices[index1]);
-    montaCaminho(caminho,graph,caminhos,index2);
+    montaCaminho(caminho,graph,pais,index2);
 
-    free(caminhos);
+    free(pais);
     // printa txt
     if(txt != NULL)
         _descricaoTextualMelhorCaminho(graph,caminho,txt);
@@ -616,10 +622,13 @@ Vertice grafoVerticeMaisProximo(Ponto ponto, Grafo g){
     for(int i=0; i<graph->qtdAtual; i++){
         if(graph->vertices[i]->deletado == 1) continue;
         if(listLenght(graph->vertices[i]->adjacentes)==0) continue;
+
+        //
         double dX = pontoGetX(ponto) - pontoGetX(graph->vertices[i]->data);
         dX = dX*dX;
         double dY = pontoGetY(ponto) - pontoGetY(graph->vertices[i]->data);
         dY = dY*dY;
+        
         double dist = sqrt(dX+dY);
         if(dist < menorDistancia){
             menorDistancia = dist;

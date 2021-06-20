@@ -413,9 +413,6 @@ void _printAresta(FILE *svg, Ponto inicio, Ponto fim, char cor[]){
     }
     else if (orientacao == 2){
         fprintf(svg,"<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"%s\"/>\n",x1,y1,x2,y2,cor);
-        // x1p = x1-1.25(point radius);     y1p = |y2-y1|/2 + y1 + 1
-        // x2p = x1 -1 -1.25(point radius); y2p = |y2-y1|/2 - y2 - 1
-        // x3p = x1 +1 -1.25(point radius); y3p = 
         double maior = _maior(y1,y2);
         fprintf(svg,"<polygon points=\"%lf,%lf %lf,%lf %lf,%lf\" fill=\"%s\"/>",x1,maior-1.5,x1-2,maior-2-1.5,x1+2,maior-2-1.5,cor); 
     }
@@ -457,7 +454,6 @@ void svgPrintGrafo(FILE *svg, Grafo grafo, int ehDirecionado){
     }
     
     for(int i = 0; i<qtdVertices; i++){
-        //printa o grafo com um raio de 10px
         Ponto ponto = grafoVerticeGetData(vertices[i]);
         svgPrintPonto(svg, ponto, 2.5,"#333333");
     }
@@ -481,7 +477,6 @@ void svgPrintCaminhoAnimado(FILE *svg, List caminho, char *cor, int ehMaisCurto,
     }
 
     fprintf(svg,"<path style=\"stroke:%s;stroke-width:3px;fill-opacity:0\" d=\"M %lf,%lf",cor,x,y);
-
     while(node){
         ponto = grafoVerticeGetData(nodeGetData(node));
         x = pontoGetX(ponto), y = pontoGetY(ponto);
@@ -498,12 +493,6 @@ void svgPrintCaminhoAnimado(FILE *svg, List caminho, char *cor, int ehMaisCurto,
         node = nodeGetNext(node);
     }
     fprintf(svg,"\" id=\"id%d\"/>\n",contadorDeCaminhos);
-
-    // fprintf(svg,"<rect x=\"\" y=\"\" width=\"15\" height=\"15\" fill=\"red\">\n");
-    // fprintf(svg,"<animateMotion dur=\"60s\" repeatCount=\"indefinite\">\n");
-    // fprintf(svg,"<mpath xlink:href=\"#id%d\"/>\n",contadorDeCaminhos);
-    // fprintf(svg,"</animateMotion>\n");
-    // fprintf(svg,"</rect>\n");
 
     if(taDeBike) fprintf(svg,"<image x=\"\" y=\"\" width=\"45\" height=\"45\" href=\"%s\">\n", getVandaoDandoGrau());
     else fprintf(svg,"<image x=\"\" y=\"\" width=\"45\" height=\"45\" href=\"%s\">\n", getVandaoDandoRole());

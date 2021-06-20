@@ -657,11 +657,9 @@ void qrySoc(FILE *txt, Grafo ruas ,QuadTree postos, Htable cepXquadra, List qryF
             Generic g;
             Poligono caminho = _qrySoc(ruas,endereco,menores[i]);
             if(caminho == NULL){
-                printf("ACHOU CAMINHO\n");
                 Line l = createLine(pontoGetX(endereco),pontoGetY(endereco),pontoGetX(menores[i]),pontoGetY(menores[i]),"red","red");
                 g = createGeneric("linhatrac",l,freeLine, NULL);
             }else{
-                printf("NAO ACHOU CAMINHO\n");
                 g = createGeneric("caminho",caminho,freePolig,NULL);
             }
             listInsert(qryFigures,g);
@@ -761,16 +759,15 @@ void qryMud(FILE *txt, QuadTree moradores, Htable cepXquadra, Htable cpfXpessoa,
     }
     Generic elementoMorador = QtGetInfo(moradores,nodeMorador);
     if(elementoMorador == NULL){
-        printf("morador nulo\n");
         return;
     }
 
     Morador morador = genericGetValores(elementoMorador);
 
     Pessoa pessoa = hashGetKey(cpfXpessoa,cpf);
-    if(pessoa == NULL){
-        printf("pessoa nula\n");
-    }
+    // if(pessoa == NULL){
+    //     printf("pessoa nula\n");
+    // }
 
     char *cepNovo = malloc(sizeof(char)*strlen(cep)+1);
     strcpy(cepNovo,cep);
@@ -980,6 +977,7 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
     Vertice vFim = grafoVerticeMaisProximo(destino,ruas);
     Ponto pInicio = grafoVerticeGetData(vInicio);
     Ponto pFim = grafoVerticeGetData(vFim);
+
     fprintf(pathTxt,"Caminho mais curto: ");
     List caminhoMaisCurto = melhorCaminho(ruas,vInicio,vFim,ruaGetDistancia,pathTxt);
 
@@ -997,27 +995,24 @@ void qryP(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCur
 
     if(caminhoMaisCurto == NULL && caminhoMaisRapido == NULL){
         fprintf(pathTxt,"Não foi possível encontrar um caminho do ponto (%.2lf,%.2lf) até o ponto (%.2lf,%.2lf)",pontoGetX(pInicio),pontoGetY(pInicio),pontoGetX(pFim),pontoGetY(pFim));
-        printf("caminho mais curto e mais rapido nulo\n");
+        // printf("caminho mais curto e mais rapido nulo\n");
         fclose(svg);
         return;
     }
 
     else if(caminhoMaisCurto == NULL){
-        printf("caminho mais curto nulo\n");
+        // printf("caminho mais curto nulo\n");
         return;
     }
 
     else if(caminhoMaisRapido == NULL){
-        printf("caminho mais rapido nulo\n");
+        // printf("caminho mais rapido nulo\n");
         return;
     }
-    
-
     
     svgPrintCaminhoAnimado(svg,caminhoMaisCurto, corCurto, 1, 0);
     svgPrintCaminhoAnimado(svg,caminhoMaisRapido, corRapido, 0, 0);
 
-    
     fclose(svg);
     freeLista2(caminhoMaisCurto);
     freeLista2(caminhoMaisRapido);
@@ -1228,13 +1223,10 @@ void qrySp(QuadTree trees[], Grafo ruas, Ponto inicio, Ponto destino, char corCu
         Vertice vertex = vertices[i];
         p = grafoVerticeGetData(vertex);
         if(pointInsPolig(poli,p)){
-            // vertices = grafoRemoveVertice(ruas,vertex,freePonto,freeRua);
-            // i--;
-            // qtdVertices = grafoGetQtdVertices(ruas);
-            grafoMarkDeleted(vertex);
+            grafoMarkDeleted(vertex); //mais performatica
         }
     }
-    printf("SAIU DO FOR QUE REMOVE\n");
+    
     freePolig(poli);
 
     freeLista(pontos,freeGeneric);

@@ -261,15 +261,12 @@ Ponto _getRegistrador(Ponto registradores[], char string[]){
 void _freeRegistradores(Ponto registradores[]){
     for(int i=0; i<11; i++){
         if(registradores[i] != NULL){
-            printf("Registrador R%d: %lf %lf\n",i,pontoGetX(registradores[i]),pontoGetY(registradores[i]));
             freePonto(registradores[i]);
         }
     }
 }
 
-void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdescricao, Htable cpfXcep, Htable cepXquadra, Diretorios dir){
-    
-    
+void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htable tipoXdescricao, Htable cpfXcep, Htable cepXquadra, Diretorios dir){    
     int id1, id2;
     int n;
     double x, y, r, w, h, num;
@@ -472,13 +469,11 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             free(pathSufix);
         }
         else if(!strcmp(comando,"p?")){
-            printf("Entrou no p\n");
             fscanf(qry, "%s %s %s %s %s\n", sufix, regOrigem, regDestino, corBorda, corPreench);
             if(!strcmp(sufix,"-")){
                 strcpy(sufix,sufixoAnterior);
             }else{
                 if(strcmp(sufixoAnterior,"#") != 0){
-                    printf("FECHANDO A TAG DO SUFIXO DENTRO DO WHILE -- %s\n",sufixoAnterior);
                     char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
                     FILE *svg = fopen(pathSufixAnterior, "a");
                     fprintf(svg,"</svg>");
@@ -493,13 +488,11 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             qryP(trees, ruas,p1,p2, corBorda, corPreench, pathSufix, txt);
             free(pathSufix);
         }else if(!strcmp(comando,"pb?")){
-            printf("Entrou no p\n");
             fscanf(qry, "%s %s %s %s\n", sufix, regOrigem, regDestino, corPreench);
             if(!strcmp(sufix,"-")){
                 strcpy(sufix,sufixoAnterior);
             }else{
                 if(strcmp(sufixoAnterior,"#") != 0){
-                    printf("FECHANDO A TAG DO SUFIXO DENTRO DO WHILE -- %s\n",sufixoAnterior);
                     char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
                     FILE *svg = fopen(pathSufixAnterior, "a");
                     fprintf(svg,"</svg>");
@@ -519,13 +512,11 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
 
             qryBf(ruas, n, qryFigures, txt);
         }else if(!strcmp(comando,"sp?")){
-            printf("Entrou no sp\n");
             fscanf(qry, "%s %s %s %s %s\n", sufix, regOrigem, regDestino, corBorda, corPreench);
             if(!strcmp(sufix,"-")){
                 strcpy(sufix,sufixoAnterior);
             }else{
                 if(strcmp(sufixoAnterior,"#") != 0){
-                    printf("FECHANDO A TAG DO SUFIXO DENTRO DO WHILE -- %s\n",sufixoAnterior);
                     char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
                     FILE *svg = fopen(pathSufixAnterior, "a");
                     fprintf(svg,"</svg>");
@@ -542,7 +533,6 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             free(pathSufix);
         }
     }
-    // printf("FECHANDO A TAG DO SUFIXO FORA DO WHILE -- %s\n",sufixoAnterior);
 
     if(strcmp(sufixoAnterior, "#") != 0){
         char *pathSufixAnterior = getPathSufix(dir,sufixoAnterior);
