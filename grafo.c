@@ -546,6 +546,14 @@ char *_getDirecao(Ponto inicio, Ponto fim){
         return "Leste";
     }else if(x2 > x1 && y1 == y2){ // PRA DIREITA
         return "Oeste";
+    }else if(x1 > x2 && y1 > y2){ // SUDESTE
+        return "Sudeste";
+    }else if(x1 < x2 && y1 > y2){ // SUDOESTE
+        return "Sudoeste";
+    }else if(x1 > x2 && y1 < y2){ // NORDESTE
+        return "Nordeste";
+    }else if(x1 < x2 && y1 < y2){ // NOROESTE
+        return "Noroeste";
     }
     return "Diagonal";
 }

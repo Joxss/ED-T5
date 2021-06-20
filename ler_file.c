@@ -44,15 +44,15 @@ void leGeo(QuadTree * trees, Htable cepXQuadra,char input[]){
     double r, x, y, h, w, n;
     int i=1000, nq=1000, nh=1000, ns=1000, nr=1000;
     char comando[10];
-    char id[50];
+    char id[100];
     char texto[200];
-    char cfill[20], cstrk[20];
-    char swQ[20]="1px", cfillQ[20]="red", cstrkQ[20]="red";
-    char swH[20]="1px", cfillH[20]="black", cstrkH[20]="black";
-    char swR[20]="1px", cfillR[20]="green", cstrkR[20]="green";
-    char swS[20]="1px", cfillS[20]="green", cstrkS[20]="green";
+    char cfill[50], cstrk[50];
+    char swQ[50]="1px", cfillQ[50]="red", cstrkQ[50]="red";
+    char swH[50]="1px", cfillH[50]="black", cstrkH[50]="black";
+    char swR[50]="1px", cfillR[50]="green", cstrkR[50]="green";
+    char swS[50]="1px", cfillS[50]="green", cstrkS[50]="green";
 
-    char swCirc[20]="1px", swRect[20]="1px";
+    char swCirc[50]="1px", swRect[50]="1px";
 
     List circList = createLista();
     List rectList = createLista();
@@ -270,11 +270,11 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
     int id1, id2;
     int n;
     double x, y, r, w, h, num;
-    char corBorda[20], corPreench[20];
-    char id[50], opcional[20];
+    char corBorda[100], corPreench[100];
+    char id[100], opcional[50];
     char comando[10];
     
-    char cpf[15], cnpj[17], compl[50];
+    char cpf[50], cnpj[50], compl[100];
     char sufix[100];
     char face;
 
@@ -429,6 +429,7 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
         //************ T5 ************//
         else if(!strcmp(comando,"@m?")){
             fscanf(qry,"%s %s",registrador,cpf);
+            fprintf(txt,"%s %s %s\n",comando, registrador, cpf);
             QuadNode nodeMorador = QtGetById(trees[10],cpf);
             if(nodeMorador == NULL) continue;
             Ponto p = genericGetPonto(QtGetInfo(trees[10],nodeMorador));
@@ -438,6 +439,7 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
         }
         else if(!strcmp(comando,"@e?")){
             fscanf(qry,"%s %s %c %d",registrador,id,&face,&n);
+            fprintf(txt,"%s %s %s %c %d\n",comando, registrador, id, face, n);
             Quadra quadra = hashGetKey(cepXquadra,id);
             if(quadra == NULL) continue;
             Ponto p = quadraGetEndereco(quadra,face,n);
@@ -445,7 +447,8 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             qryReg(qryFigures,p,registrador);
         }
         else if(!strcmp(comando,"@g?")){
-            fscanf(qry,"%s %s",registrador,id);
+            fscanf(qry,"%s %s\n",registrador,id);
+            fprintf(txt,"%s %s %s\n",comando, registrador, id);
             QuadNode nodeEquipamento = QtGetById(trees[4],id);
             if(nodeEquipamento == NULL) nodeEquipamento = QtGetById(trees[5],id);
             if(nodeEquipamento == NULL) nodeEquipamento = QtGetById(trees[6],id);
@@ -458,18 +461,21 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
         }
         else if(!strcmp(comando,"@xy")){
             fscanf(qry,"%s %lf %lf",registrador,&x,&y);
+            fprintf(txt,"%s %s %lf %lf\n",comando, registrador, x, y);
             Ponto p = createPoint(x,y);
             _setRegistrador(registradores,registrador,p);
             qryReg(qryFigures,p,registrador);
         }
         else if(!strcmp(comando,"ccv")){
             fscanf(qry,"%s",sufix);
+            fprintf(txt,"%s %s\n", comando, sufix);
             char *pathSufix = getPathSufix(dir,sufix);
             qryCCV(trees,ruas, pathSufix);
             free(pathSufix);
         }
         else if(!strcmp(comando,"p?")){
             fscanf(qry, "%s %s %s %s %s\n", sufix, regOrigem, regDestino, corBorda, corPreench);
+            fprintf(txt, "%s %s %s %s %s %s\n",comando, sufix, regOrigem, regDestino, corBorda, corPreench);
             if(!strcmp(sufix,"-")){
                 strcpy(sufix,sufixoAnterior);
             }else{
@@ -489,6 +495,7 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
             free(pathSufix);
         }else if(!strcmp(comando,"pb?")){
             fscanf(qry, "%s %s %s %s\n", sufix, regOrigem, regDestino, corPreench);
+            fprintf(txt, "%s %s %s %s %s\n",comando, sufix, regOrigem, regDestino, corPreench);
             if(!strcmp(sufix,"-")){
                 strcpy(sufix,sufixoAnterior);
             }else{
@@ -509,10 +516,11 @@ void leQry(Grafo ruas, QuadTree *trees,List qryFigures, Htable cpfXpessoa, Htabl
         
         }else if(!strcmp(comando,"bf")){
             fscanf(qry, "%d\n", &n);
-
+            fprintf(txt, "%s %d\n",comando, n);
             qryBf(ruas, n, qryFigures, txt);
         }else if(!strcmp(comando,"sp?")){
             fscanf(qry, "%s %s %s %s %s\n", sufix, regOrigem, regDestino, corBorda, corPreench);
+            fprintf(txt, "%s %s %s %s %s %s\n",comando, sufix, regOrigem, regDestino, corBorda, corPreench);
             if(!strcmp(sufix,"-")){
                 strcpy(sufix,sufixoAnterior);
             }else{
